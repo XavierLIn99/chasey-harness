@@ -1,0 +1,17 @@
+{
+  "name": "chasey-harness",
+  "version": "0.1.2",
+  "private": true,
+  "description": "Explore a DeepSeek Harness conversation as a branching map.",
+  "type": "module",
+  "main": "index.js",
+  "exports": { ".": "./index.js", "./client": "./client.js", "./icon": "./icon.svg", "./locale/*.json": "./locale/*.json" },
+  "files": ["index.js", "client.js", "icon.svg", "cordis.patch.yml", "locale", "README.md"],
+  "engines": { "dsh": "0.2.2-rc.5" },
+  "dsh": {
+    "bundle": { "patch": "./cordis.patch.yml" },
+    "client": { "platform": "web", "immediately": true, "inject": ["@deepseek-ai/dsh-client-ui-conversation", "@deepseek-ai/dsh-client-ui-sidebar-right", "@deepseek-ai/dsh-client-ui-session"] }
+  },
+  "scripts": { "build": "node scripts/build.mjs", "test": "node --test test/*.test.js" },
+  "devDependencies": { "esbuild": "0.25.12" }
+}
