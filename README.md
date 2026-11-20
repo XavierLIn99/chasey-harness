@@ -44,3 +44,7 @@ npm run build
 ```
 
 The client uses the host's React, Markdown renderer, and session APIs. The tests cover branch reconstruction, quoted text, camera geometry, and math formatting.
+
+## Acknowledgements
+
+Thank you to our colleagues MaoKaiTou (<mao.caide@iboxplus.net>) and Zhen-Ze Zhao for their contributions to Chasey. We also thank OpenAI for developing the large language models that helped us write, debug, and test the plugin.
