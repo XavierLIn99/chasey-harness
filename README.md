@@ -47,4 +47,4 @@ The client uses the host's React, Markdown renderer, and session APIs. The tests
 
 ## Acknowledgements
 
-Thank you to our colleagues MaoKaiTou (<mao.caide@iboxplus.net>) and Zhen-Ze Zhao for their contributions to Chasey. We also thank OpenAI for developing the large language models that helped us write, debug, and test the plugin.
+Thank you to our colleagues MaoKaiTou (<mao.caide@iboxplus.net>) and Zhen-Ze Zhao (<ucaqzh0@ucl.ac.uk>) for their contributions to Chasey. We also thank OpenAI for developing the large language models that helped us write, debug, and test the plugin.
