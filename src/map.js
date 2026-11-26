@@ -1,26 +1,28 @@
+import { t } from './i18n.js'
 import { nativeQuotes, quoteIndex } from './quotes.js'
 
-const marker = /^〔追追 · 第 (\d+) 轮〕\n((?:> [^\n]*\n)+)\n([\s\S]+)$/
+const marker = /^(?:〔追追 · 第 (\d+) [轮輪]〕|\[Chasey · Turn (\d+)\])\n((?:> [^\n]*\n)+)\n([\s\S]+)$/
 
-function readable(parts, attachments) {
+function readable(parts, attachments, locale) {
   return (parts ?? []).map(part => {
     if (part.type === 'text') return part.text
-    if (attachments && part.type === 'image') return '〔图片〕'
-    if (attachments && part.type === 'file') return '〔附件〕'
+    if (attachments && part.type === 'image') return t('[Image]', {}, locale)
+    if (attachments && part.type === 'file') return t('[Attachment]', {}, locale)
     return ''
   }).filter(Boolean).join('\n')
 }
 
-export function followUpText(turn, excerpt, question) {
+export function followUpText(turn, excerpt, question, locale) {
   if (!Number.isSafeInteger(turn) || turn < 1 || !excerpt.trim() || !question.trim()) {
-    throw new Error('请选择原文并填写问题。')
+    throw new Error(t('Select a passage and enter a question.'))
   }
   const quote = excerpt.trim().split('\n').map(line => '> ' + line).join('\n')
-  return '〔追追 · 第 ' + turn + ' 轮〕\n' + quote + '\n\n' + question.trim()
+  const header = t('[Chasey · Turn {n}]', {n: turn}, locale)
+  return header + '\n' + quote + '\n\n' + question.trim()
 }
 
 // Only settled, user-visible text from the selected binding enters the map.
-export function project(entries) {
+export function project(entries, locale) {
   const turns = new Map(), earlier = quoteIndex()
   let current
   function get(id) {
@@ -35,15 +37,15 @@ export function project(entries) {
     if (event.type === 'turn/end') { current = undefined; continue }
     if (event.surfaceOp && event.surfaceOp !== 'append') continue
     if (event.type === 'user/message' && data.source?.kind === 'user' && current) {
-      const text = readable(data.content, true)
+      const text = readable(data.content, true, locale)
       if (!text) continue
       const ref = text.match(marker)
-      if (ref && Number(ref[1]) <= current.id && Number(ref[1]) > 0) {
-        const source = Number(ref[1])
+      const source = ref && Number(ref[1] ?? ref[2])
+      if (source > 0 && source <= current.id) {
         if (source !== current.id) current.parent ??= source
-        current.quote = ref[2].trimEnd().split('\n').map(line => line.slice(2)).join('\n')
+        current.quote = ref[3].trimEnd().split('\n').map(line => line.slice(2)).join('\n')
         current.references.push({text:current.quote, parent:source})
-        current.questions.push(ref[3])
+        current.questions.push(ref[4])
       } else {
         const {quotes, question} = nativeQuotes(text)
         for (const quote of quotes) {

@@ -1,3 +1,4 @@
+import { t } from './i18n.js'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {selectedSource} from './quote-selection.js'
 import { createPortal } from 'react-dom'
@@ -70,5 +71,5 @@ export function SelectionAction({ reader, active, onPick, onPreview }) {
     onPointerDown={e=>e.preventDefault()} onMouseDown={e=>e.preventDefault()} onClick={()=>{
       onPick(anchor.text, rangeRef.current)
       dismiss()
-    }}>追问这段 <span aria-hidden="true">↗</span></button>, reader.current.ownerDocument.body)
+    }}>{t('Ask about this')} <span aria-hidden="true">↗</span></button>, reader.current.ownerDocument.body)
 }

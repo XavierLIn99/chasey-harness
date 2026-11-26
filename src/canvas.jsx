@@ -1,8 +1,10 @@
+import { LocaleContext } from './use-locale.js'
+import { t } from './i18n.js'
 import React, { memo, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import {Typeset} from './typeset.jsx'
 import { centered, MAX_ZOOM, MIN_ZOOM, readPositions, zoomAt } from './camera.js'
 
-const title = node => node.questions.join(' / ') || '本轮回答'
+const title = (node, locale) => node.questions.join(' / ') || t('Answer', {}, locale)
 const midpoint = (a,b) => ({ x:(a.x+b.x)/2, y:(a.y+b.y)/2 })
 const distance = (a,b) => Math.hypot(a.x-b.x, a.y-b.y)
 const nodePoint = (n, positions) => positions.get(n.id) ?? n
@@ -17,11 +19,12 @@ function edgePath(a,b,kind) {
 }
 
 const Cards = memo(function Cards({ graph, byId, positions, selected, returns, pick }) {
+  const locale = React.useContext(LocaleContext)
   return <>
     <svg className="ch-wires" aria-hidden="true">{graph.edges.map(e=><path key={e.source.id+'-'+e.target.id} className={'ch-line '+e.kind} d={edgePath(nodePoint(e.source,positions),nodePoint(e.target,positions),e.kind)}/>)}{returns.map(([a,b])=><path key={a+'-'+b} className="ch-line return" d={edgePath(nodePoint(byId.get(a),positions),nodePoint(byId.get(b),positions),'return')}/>)}</svg>
     {graph.nodes.map(n=>{
       const point=nodePoint(n,positions)
-      return <button key={n.id} data-turn={n.id} className={'ch-card'+(n.id===selected?' active':'')} style={{left:point.x,top:point.y}} aria-pressed={n.id===selected} aria-label={'第 '+n.id+' 轮：'+title(n)} onClick={()=>pick(n)}><small>{String(n.id).padStart(2,'0')} <span>{n.parent ? '追问 · '+n.parent : '问答'}</span>{n.id===selected && <em>阅读中</em>}</small><div className="ch-card-title"><Typeset text={title(n)} limit={180}/></div><div className="ch-preview"><Typeset text={n.answers[0] || '等待回答'} limit={180} summary/></div></button>
+      return <button key={n.id} data-turn={n.id} className={'ch-card'+(n.id===selected?' active':'')} style={{left:point.x,top:point.y}} aria-pressed={n.id===selected} aria-label={t('Turn {n}: {title}', {n: n.id, title: title(n, locale)})} onClick={()=>pick(n)}><small>{String(n.id).padStart(2,'0')} <span>{n.parent ? t('From turn {n}', {n: n.parent}) : t('Q&A')}</span>{n.id===selected && <em>{t('Reading')}</em>}</small><div className="ch-card-title"><Typeset text={title(n, locale)} limit={180}/></div><div className="ch-preview"><Typeset text={n.answers[0] || t('Waiting for an answer')} limit={180} summary/></div></button>
     })}
   </>
 })
@@ -83,7 +86,7 @@ export function Canvas({sessionKey, graph, byId, selected, expanded, returns, on
     if (!round) { center(selected ?? latest,true); return }
     const target = byId.get(Number(round))
     if (!target) {
-      roundInput.current.setCustomValidity('当前图谱里没有这一轮。')
+      roundInput.current.setCustomValidity(t('This turn is not on the map.'))
       roundInput.current.reportValidity()
       return
     }
@@ -122,7 +125,7 @@ export function Canvas({sessionKey, graph, byId, selected, expanded, returns, on
   function updatePositions(next) { positionsRef.current=next; setPositions(next) }
   function commitPositions() {
     try { localStorage.setItem(storageKey,JSON.stringify([...positionsRef.current])) }
-    catch { data.current.onError('卡片已移动，本机未能保存这次位置。') }
+    catch { data.current.onError(t('Card moved. Its position could not be saved on this device.')) }
   }
   function down(e) {
     if (e.button!==0 && e.button!==1) return
@@ -174,9 +177,9 @@ export function Canvas({sessionKey, graph, byId, selected, expanded, returns, on
   }
 
   return <>
-    <div className="ch-tools"><span className="ch-legend main">顺序</span><span className="ch-legend branch">追问</span><span className="ch-legend back">回连</span><div className="ch-zoom"><button aria-label="缩小" disabled={camera.k<=MIN_ZOOM} onClick={()=>zoomButton(1/1.2)}>−</button><button title="重置缩放" onClick={()=>zoomButton(1/cameraRef.current.k)}>{Math.round(camera.k*100)}%</button><button aria-label="放大" disabled={camera.k>=MAX_ZOOM} onClick={()=>zoomButton(1.2)}>+</button><input ref={roundInput} className="ch-round-input" inputMode="numeric" value={round} aria-label="跳到第几轮" placeholder="轮次" title="输入轮次后按回车" onChange={e=>{e.target.setCustomValidity('');setRound(e.target.value.replace(/[^0-9]/g,''))}} onKeyDown={e=>{if(e.key==='Enter'){e.preventDefault();locate()}}}/><button disabled={latest==null} title={selected!=null?'定位所选卡片':'定位最新一轮'} onClick={locate}>定位</button></div></div>
+    <div className="ch-tools"><span className="ch-legend main">{t('Sequence')}</span><span className="ch-legend branch">{t('Follow-up')}</span><span className="ch-legend back">{t('Return link')}</span><div className="ch-zoom"><button aria-label={t('Zoom out')} disabled={camera.k<=MIN_ZOOM} onClick={()=>zoomButton(1/1.2)}>−</button><button title={t('Reset zoom')} onClick={()=>zoomButton(1/cameraRef.current.k)}>{Math.round(camera.k*100)}%</button><button aria-label={t('Zoom in')} disabled={camera.k>=MAX_ZOOM} onClick={()=>zoomButton(1.2)}>+</button><input ref={roundInput} className="ch-round-input" inputMode="numeric" value={round} aria-label={t('Jump to turn')} placeholder={t('Turn')} title={t('Enter a turn number and press Enter')} onChange={e=>{e.target.setCustomValidity('');setRound(e.target.value.replace(/[^0-9]/g,''))}} onKeyDown={e=>{if(e.key==='Enter'){e.preventDefault();locate()}}}/><button disabled={latest==null} title={selected!=null?t('Center selected card'):t('Center latest turn')} onClick={locate}>{t('Locate')}</button></div></div>
     {linkBanner}
-    <div ref={viewport} className={'ch-viewport'+(moving?' ch-moving':'')} tabIndex="0" aria-label="会话图谱，可拖动画布和卡片，双指缩放"
+    <div ref={viewport} className={'ch-viewport'+(moving?' ch-moving':'')} tabIndex="0" aria-label={t('Conversation map. Drag the canvas or cards. Pinch to zoom.')}
       onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up} onLostPointerCapture={up}
       onClickCapture={e=>{if(swallowClick.current && e.detail!==0){e.preventDefault();e.stopPropagation()}}}
       onFocus={e=>{const card=e.target.closest('[data-turn]');if(card && card.matches(':focus-visible'))center(Number(card.dataset.turn))}}

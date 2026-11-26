@@ -34,7 +34,208 @@ __export(plugin_exports, {
   inject: () => inject
 });
 module.exports = __toCommonJS(plugin_exports);
-var import_react5 = __toESM(require("react"), 1);
+
+// src/use-locale.js
+var import_react = require("react");
+
+// src/messages/zh-Hans.json
+var zh_Hans_default = {
+  Chasey: "\u8FFD\u8FFD",
+  "Conversation map": "\u4F1A\u8BDD\u56FE\u8C31",
+  "Chasey conversation map": "\u8FFD\u8FFD\u4F1A\u8BDD\u56FE\u8C31",
+  "Chasey \xB7 Conversation map": "\u8FFD\u8FFD \xB7 \u4F1A\u8BDD\u56FE\u8C31",
+  "Ask about a passage and link back to the main thread.": "\u6CBF\u539F\u6587\u5206\u53C9\u8FFD\u95EE\uFF0C\u8FDE\u56DE\u4E3B\u7EBF\u3002",
+  "Open the map for this conversation": "\u6253\u5F00\u5F53\u524D\u4F1A\u8BDD\u7684\u8FFD\u8FFD\u56FE\u8C31",
+  "Chasey could not open this conversation.": "\u8FFD\u8FFD\u65E0\u6CD5\u7ED1\u5B9A\u6B64\u4F1A\u8BDD\u3002",
+  "Could not save the link. Check local storage permissions.": "\u65E0\u6CD5\u4FDD\u5B58\u8FDE\u7EBF\uFF0C\u8BF7\u68C0\u67E5\u6B64\u7A97\u53E3\u7684\u672C\u5730\u5B58\u50A8\u6743\u9650\u3002",
+  "{n} turn": "{n} \u8F6E",
+  "{n} turns": "{n} \u8F6E",
+  "This conversation is temporarily unavailable.": "\u4F1A\u8BDD\u6682\u65F6\u65E0\u6CD5\u6253\u5F00",
+  "Earlier turns could not load. Showing a partial map.": "\u8F83\u65E9\u8BB0\u5F55\u52A0\u8F7D\u5931\u8D25\uFF0C\u5F53\u524D\u5C55\u793A\u90E8\u5206\u56FE\u8C31",
+  "Loading earlier turns\u2026": "\u6B63\u5728\u8BFB\u53D6\u8F83\u65E9\u7684\u4F1A\u8BDD\u8BB0\u5F55\u2026",
+  Retry: "\u91CD\u8BD5",
+  "This conversation has no turns to display yet.": "\u8FD9\u6BB5\u4F1A\u8BDD\u8FD8\u6CA1\u6709\u53EF\u5C55\u793A\u7684\u95EE\u7B54\u3002",
+  "Loading conversation\u2026": "\u6B63\u5728\u8BFB\u53D6\u4F1A\u8BDD\u2026",
+  "Choose a card to link back to from turn {n}.": "\u9009\u62E9\u7B2C {n} \u8F6E\u8981\u8FDE\u56DE\u7684\u5361\u7247",
+  Cancel: "\u53D6\u6D88",
+  Answer: "\u672C\u8F6E\u56DE\u7B54",
+  "Turn {n}: {title}": "\u7B2C {n} \u8F6E\uFF1A{title}",
+  "From turn {n}": "\u8FFD\u95EE \xB7 {n}",
+  "Q&A": "\u95EE\u7B54",
+  Reading: "\u9605\u8BFB\u4E2D",
+  "Waiting for an answer": "\u7B49\u5F85\u56DE\u7B54",
+  "This turn is not on the map.": "\u5F53\u524D\u56FE\u8C31\u91CC\u6CA1\u6709\u8FD9\u4E00\u8F6E\u3002",
+  "Card moved. Its position could not be saved on this device.": "\u5361\u7247\u5DF2\u79FB\u52A8\uFF0C\u672C\u673A\u672A\u80FD\u4FDD\u5B58\u8FD9\u6B21\u4F4D\u7F6E\u3002",
+  Sequence: "\u987A\u5E8F",
+  "Follow-up": "\u8FFD\u95EE",
+  "Return link": "\u56DE\u8FDE",
+  "Zoom out": "\u7F29\u5C0F",
+  "Reset zoom": "\u91CD\u7F6E\u7F29\u653E",
+  "Zoom in": "\u653E\u5927",
+  "Jump to turn": "\u8DF3\u5230\u7B2C\u51E0\u8F6E",
+  Turn: "\u8F6E\u6B21",
+  "Enter a turn number and press Enter": "\u8F93\u5165\u8F6E\u6B21\u540E\u6309\u56DE\u8F66",
+  "Center selected card": "\u5B9A\u4F4D\u6240\u9009\u5361\u7247",
+  "Center latest turn": "\u5B9A\u4F4D\u6700\u65B0\u4E00\u8F6E",
+  Locate: "\u5B9A\u4F4D",
+  "Conversation map. Drag the canvas or cards. Pinch to zoom.": "\u4F1A\u8BDD\u56FE\u8C31\uFF0C\u53EF\u62D6\u52A8\u753B\u5E03\u548C\u5361\u7247\uFF0C\u53CC\u6307\u7F29\u653E",
+  "Sent. The answer will appear on the map when complete.": "\u5DF2\u63D0\u4EA4\u5230\u672C\u4F1A\u8BDD\u3002\u56DE\u7B54\u5B8C\u6210\u540E\u4F1A\u663E\u793A\u5728\u56FE\u8C31\u4E0A\u3002",
+  "Could not send: {error}": "\u63D0\u4EA4\u5931\u8D25\uFF1A{error}",
+  "Previous turn": "\u4E0A\u4E00\u8F6E",
+  "Turn {n}": "\u7B2C {n} \u8F6E",
+  "Next turn": "\u4E0B\u4E00\u8F6E",
+  "Link to card": "\u8FDE\u56DE\u5361\u7247",
+  "Back to map": "\u8FD4\u56DE\u753B\u5E03",
+  "Expand reader": "\u5C55\u5F00\u9605\u8BFB",
+  "Close reader": "\u5173\u95ED\u539F\u6587",
+  "Original messages": "\u672C\u8F6E\u539F\u6587",
+  "My question": "\u6211\u7684\u63D0\u95EE",
+  "Quoted from turn {n} \u2197": "\u5F15\u7528\u7B2C {n} \u8F6E\u539F\u6587 \u2197",
+  "Quoted from this turn": "\u5F15\u7528\u672C\u8F6E\u539F\u6587",
+  "Quote \xB7 source unconfirmed": "\u5F15\u7528 \xB7 \u6765\u6E90\u672A\u786E\u8BA4",
+  "Original answer": "\u56DE\u7B54\u539F\u6587",
+  "Waiting for this answer\u2026": "\u7B49\u5F85\u672C\u8F6E\u56DE\u7B54\u2026",
+  "This conversation is read-only.": "\u6B64\u4F1A\u8BDD\u5F53\u524D\u4E3A\u53EA\u8BFB\uFF0C\u65E0\u6CD5\u63D0\u4EA4\u8FFD\u95EE\u3002",
+  "Remove link to turn {n}": "\u79FB\u9664\u56DE\u5230\u7B2C {n} \u8F6E\u7684\u8FDE\u7EBF",
+  "Back to turn {n} \xD7": "\u56DE\u5230\u7B2C {n} \u8F6E \xD7",
+  Quote: "\u5F15\u7528",
+  "Clear selection": "\u6E05\u9664\u9009\u6BB5",
+  "Ask about the selection": "\u6CBF\u9009\u6BB5\u8FFD\u95EE",
+  "Ask about this turn": "\u6CBF\u672C\u8F6E\u8FFD\u95EE",
+  "Ask about this passage\u2026": "\u9488\u5BF9\u8FD9\u6BB5\u539F\u6587\u63D0\u95EE\u2026",
+  "Ask a follow-up\u2026": "\u6CBF\u7740\u8FD9\u4E00\u8F6E\u7EE7\u7EED\u8FFD\u95EE\u2026",
+  "Send to this conversation": "\u53D1\u9001\u5230\u672C\u4F1A\u8BDD",
+  "Ask about this": "\u8FFD\u95EE\u8FD9\u6BB5",
+  Copy: "\u590D\u5236",
+  Copied: "\u5DF2\u590D\u5236",
+  Footnotes: "\u811A\u6CE8",
+  "[Image]": "\u3014\u56FE\u7247\u3015",
+  "[Attachment]": "\u3014\u9644\u4EF6\u3015",
+  "Select a passage and enter a question.": "\u8BF7\u9009\u62E9\u539F\u6587\u5E76\u586B\u5199\u95EE\u9898\u3002",
+  "[Chasey \xB7 Turn {n}]": "\u3014\u8FFD\u8FFD \xB7 \u7B2C {n} \u8F6E\u3015"
+};
+
+// src/messages/zh-Hant.json
+var zh_Hant_default = {
+  Chasey: "\u8FFD\u8FFD",
+  "Conversation map": "\u5C0D\u8A71\u5716\u8B5C",
+  "Chasey conversation map": "\u8FFD\u8FFD\u5C0D\u8A71\u5716\u8B5C",
+  "Chasey \xB7 Conversation map": "\u8FFD\u8FFD \xB7 \u5C0D\u8A71\u5716\u8B5C",
+  "Ask about a passage and link back to the main thread.": "\u6CBF\u539F\u6587\u5206\u652F\u8FFD\u554F\uFF0C\u9023\u56DE\u4E3B\u7DDA\u3002",
+  "Open the map for this conversation": "\u958B\u555F\u6B64\u5C0D\u8A71\u7684\u8FFD\u8FFD\u5716\u8B5C",
+  "Chasey could not open this conversation.": "\u8FFD\u8FFD\u7121\u6CD5\u958B\u555F\u6B64\u5C0D\u8A71\u3002",
+  "Could not save the link. Check local storage permissions.": "\u7121\u6CD5\u5132\u5B58\u9023\u7DDA\uFF0C\u8ACB\u6AA2\u67E5\u6B64\u8996\u7A97\u7684\u672C\u6A5F\u5132\u5B58\u6B0A\u9650\u3002",
+  "{n} turn": "{n} \u8F2A",
+  "{n} turns": "{n} \u8F2A",
+  "This conversation is temporarily unavailable.": "\u66AB\u6642\u7121\u6CD5\u958B\u555F\u6B64\u5C0D\u8A71",
+  "Earlier turns could not load. Showing a partial map.": "\u8F03\u65E9\u7684\u7D00\u9304\u8F09\u5165\u5931\u6557\uFF0C\u76EE\u524D\u986F\u793A\u90E8\u5206\u5716\u8B5C",
+  "Loading earlier turns\u2026": "\u6B63\u5728\u8F09\u5165\u8F03\u65E9\u7684\u5C0D\u8A71\u7D00\u9304\u2026",
+  Retry: "\u91CD\u8A66",
+  "This conversation has no turns to display yet.": "\u6B64\u5C0D\u8A71\u5C1A\u7121\u53EF\u986F\u793A\u7684\u554F\u7B54\u3002",
+  "Loading conversation\u2026": "\u6B63\u5728\u8F09\u5165\u5C0D\u8A71\u2026",
+  "Choose a card to link back to from turn {n}.": "\u9078\u64C7\u7B2C {n} \u8F2A\u8981\u9023\u56DE\u7684\u5361\u7247",
+  Cancel: "\u53D6\u6D88",
+  Answer: "\u672C\u8F2A\u56DE\u7B54",
+  "Turn {n}: {title}": "\u7B2C {n} \u8F2A\uFF1A{title}",
+  "From turn {n}": "\u8FFD\u554F \xB7 {n}",
+  "Q&A": "\u554F\u7B54",
+  Reading: "\u95B1\u8B80\u4E2D",
+  "Waiting for an answer": "\u7B49\u5F85\u56DE\u7B54",
+  "This turn is not on the map.": "\u76EE\u524D\u5716\u8B5C\u88E1\u6C92\u6709\u9019\u4E00\u8F2A\u3002",
+  "Card moved. Its position could not be saved on this device.": "\u5361\u7247\u5DF2\u79FB\u52D5\uFF0C\u672C\u6A5F\u672A\u80FD\u5132\u5B58\u6B64\u6B21\u4F4D\u7F6E\u3002",
+  Sequence: "\u9806\u5E8F",
+  "Follow-up": "\u8FFD\u554F",
+  "Return link": "\u56DE\u9023",
+  "Zoom out": "\u7E2E\u5C0F",
+  "Reset zoom": "\u91CD\u8A2D\u7E2E\u653E",
+  "Zoom in": "\u653E\u5927",
+  "Jump to turn": "\u8DF3\u5230\u7B2C\u5E7E\u8F2A",
+  Turn: "\u8F2A\u6B21",
+  "Enter a turn number and press Enter": "\u8F38\u5165\u8F2A\u6B21\u5F8C\u6309 Enter",
+  "Center selected card": "\u5B9A\u4F4D\u9078\u53D6\u7684\u5361\u7247",
+  "Center latest turn": "\u5B9A\u4F4D\u6700\u65B0\u4E00\u8F2A",
+  Locate: "\u5B9A\u4F4D",
+  "Conversation map. Drag the canvas or cards. Pinch to zoom.": "\u5C0D\u8A71\u5716\u8B5C\uFF0C\u53EF\u62D6\u52D5\u756B\u5E03\u548C\u5361\u7247\uFF0C\u4EE5\u96D9\u6307\u7E2E\u653E",
+  "Sent. The answer will appear on the map when complete.": "\u5DF2\u9001\u51FA\u3002\u56DE\u7B54\u5B8C\u6210\u5F8C\u6703\u986F\u793A\u5728\u5716\u8B5C\u4E0A\u3002",
+  "Could not send: {error}": "\u9001\u51FA\u5931\u6557\uFF1A{error}",
+  "Previous turn": "\u4E0A\u4E00\u8F2A",
+  "Turn {n}": "\u7B2C {n} \u8F2A",
+  "Next turn": "\u4E0B\u4E00\u8F2A",
+  "Link to card": "\u9023\u56DE\u5361\u7247",
+  "Back to map": "\u8FD4\u56DE\u756B\u5E03",
+  "Expand reader": "\u5C55\u958B\u95B1\u8B80",
+  "Close reader": "\u95DC\u9589\u539F\u6587",
+  "Original messages": "\u672C\u8F2A\u539F\u6587",
+  "My question": "\u6211\u7684\u63D0\u554F",
+  "Quoted from turn {n} \u2197": "\u5F15\u7528\u7B2C {n} \u8F2A\u539F\u6587 \u2197",
+  "Quoted from this turn": "\u5F15\u7528\u672C\u8F2A\u539F\u6587",
+  "Quote \xB7 source unconfirmed": "\u5F15\u7528 \xB7 \u4F86\u6E90\u672A\u78BA\u8A8D",
+  "Original answer": "\u56DE\u7B54\u539F\u6587",
+  "Waiting for this answer\u2026": "\u7B49\u5F85\u672C\u8F2A\u56DE\u7B54\u2026",
+  "This conversation is read-only.": "\u6B64\u5C0D\u8A71\u76EE\u524D\u70BA\u552F\u8B80\uFF0C\u7121\u6CD5\u9001\u51FA\u8FFD\u554F\u3002",
+  "Remove link to turn {n}": "\u79FB\u9664\u56DE\u5230\u7B2C {n} \u8F2A\u7684\u9023\u7DDA",
+  "Back to turn {n} \xD7": "\u56DE\u5230\u7B2C {n} \u8F2A \xD7",
+  Quote: "\u5F15\u7528",
+  "Clear selection": "\u6E05\u9664\u9078\u6BB5",
+  "Ask about the selection": "\u6CBF\u9078\u6BB5\u8FFD\u554F",
+  "Ask about this turn": "\u6CBF\u672C\u8F2A\u8FFD\u554F",
+  "Ask about this passage\u2026": "\u91DD\u5C0D\u9019\u6BB5\u539F\u6587\u63D0\u554F\u2026",
+  "Ask a follow-up\u2026": "\u6CBF\u8457\u9019\u4E00\u8F2A\u7E7C\u7E8C\u8FFD\u554F\u2026",
+  "Send to this conversation": "\u50B3\u9001\u5230\u6B64\u5C0D\u8A71",
+  "Ask about this": "\u8FFD\u554F\u9019\u6BB5",
+  Copy: "\u8907\u88FD",
+  Copied: "\u5DF2\u8907\u88FD",
+  Footnotes: "\u8A3B\u8173",
+  "[Image]": "\u3014\u5716\u7247\u3015",
+  "[Attachment]": "\u3014\u9644\u4EF6\u3015",
+  "Select a passage and enter a question.": "\u8ACB\u9078\u53D6\u539F\u6587\u4E26\u8F38\u5165\u554F\u984C\u3002",
+  "[Chasey \xB7 Turn {n}]": "\u3014\u8FFD\u8FFD \xB7 \u7B2C {n} \u8F2A\u3015"
+};
+
+// src/i18n.js
+var catalogs = { "zh-Hans": zh_Hans_default, "zh-Hant": zh_Hant_default };
+function resolveLocale(preferences = []) {
+  for (const tag of preferences) {
+    try {
+      const locale = new Intl.Locale(tag);
+      if (locale.language === "en") return "en";
+      if (locale.language === "zh") {
+        return locale.maximize().script === "Hant" ? "zh-Hant" : "zh-Hans";
+      }
+    } catch {
+    }
+  }
+  return "en";
+}
+var previousPreferences;
+var currentLocale;
+function deviceLocale() {
+  const device = globalThis.navigator;
+  const preferences = device?.languages?.length ? device.languages : [device?.language];
+  const key = preferences.join(",");
+  if (key !== previousPreferences) {
+    previousPreferences = key;
+    currentLocale = resolveLocale(preferences);
+  }
+  return currentLocale;
+}
+function t(message, values = {}, locale = deviceLocale()) {
+  const template = catalogs[locale]?.[message] ?? message;
+  return template.replace(/\{(\w+)\}/g, (token, name) => values[name] ?? token);
+}
+
+// src/use-locale.js
+var LocaleContext = (0, import_react.createContext)("en");
+function subscribe(notify) {
+  window.addEventListener("languagechange", notify);
+  return () => window.removeEventListener("languagechange", notify);
+}
+function useDeviceLocale() {
+  return (0, import_react.useSyncExternalStore)(subscribe, deviceLocale);
+}
+
+// src/plugin.jsx
+var import_react6 = __toESM(require("react"), 1);
 
 // src/quotes.js
 function nativeQuotes(input) {
@@ -89,23 +290,24 @@ function quoteIndex() {
 }
 
 // src/map.js
-var marker = /^〔追追 · 第 (\d+) 轮〕\n((?:> [^\n]*\n)+)\n([\s\S]+)$/;
-function readable(parts, attachments) {
+var marker = /^(?:〔追追 · 第 (\d+) [轮輪]〕|\[Chasey · Turn (\d+)\])\n((?:> [^\n]*\n)+)\n([\s\S]+)$/;
+function readable(parts, attachments, locale) {
   return (parts ?? []).map((part) => {
     if (part.type === "text") return part.text;
-    if (attachments && part.type === "image") return "\u3014\u56FE\u7247\u3015";
-    if (attachments && part.type === "file") return "\u3014\u9644\u4EF6\u3015";
+    if (attachments && part.type === "image") return t("[Image]", {}, locale);
+    if (attachments && part.type === "file") return t("[Attachment]", {}, locale);
     return "";
   }).filter(Boolean).join("\n");
 }
-function followUpText(turn, excerpt2, question) {
+function followUpText(turn, excerpt2, question, locale) {
   if (!Number.isSafeInteger(turn) || turn < 1 || !excerpt2.trim() || !question.trim()) {
-    throw new Error("\u8BF7\u9009\u62E9\u539F\u6587\u5E76\u586B\u5199\u95EE\u9898\u3002");
+    throw new Error(t("Select a passage and enter a question."));
   }
   const quote = excerpt2.trim().split("\n").map((line) => "> " + line).join("\n");
-  return "\u3014\u8FFD\u8FFD \xB7 \u7B2C " + turn + " \u8F6E\u3015\n" + quote + "\n\n" + question.trim();
+  const header = t("[Chasey \xB7 Turn {n}]", { n: turn }, locale);
+  return header + "\n" + quote + "\n\n" + question.trim();
 }
-function project(entries) {
+function project(entries, locale) {
   const turns = /* @__PURE__ */ new Map(), earlier = quoteIndex();
   let current;
   function get(id2) {
@@ -126,21 +328,21 @@ function project(entries) {
     }
     if (event.surfaceOp && event.surfaceOp !== "append") continue;
     if (event.type === "user/message" && data.source?.kind === "user" && current) {
-      const text = readable(data.content, true);
+      const text = readable(data.content, true, locale);
       if (!text) continue;
       const ref = text.match(marker);
-      if (ref && Number(ref[1]) <= current.id && Number(ref[1]) > 0) {
-        const source = Number(ref[1]);
+      const source = ref && Number(ref[1] ?? ref[2]);
+      if (source > 0 && source <= current.id) {
         if (source !== current.id) current.parent ??= source;
-        current.quote = ref[2].trimEnd().split("\n").map((line) => line.slice(2)).join("\n");
+        current.quote = ref[3].trimEnd().split("\n").map((line) => line.slice(2)).join("\n");
         current.references.push({ text: current.quote, parent: source });
-        current.questions.push(ref[3]);
+        current.questions.push(ref[4]);
       } else {
         const { quotes, question } = nativeQuotes(text);
         for (const quote of quotes) {
-          const source = earlier.find(quote);
-          current.references.push({ text: quote, parent: source });
-          if (source !== null && source < current.id) current.parent ??= source;
+          const source2 = earlier.find(quote);
+          current.references.push({ text: quote, parent: source2 });
+          if (source2 !== null && source2 < current.id) current.parent ??= source2;
         }
         if (question || !quotes.length) current.questions.push(question || text);
       }
@@ -154,7 +356,7 @@ function project(entries) {
       }
     }
   }
-  return [...turns.values()].filter((t) => t.questions.length || t.answers.length || t.references.length).sort((a, b) => a.id - b.id);
+  return [...turns.values()].filter((t2) => t2.questions.length || t2.answers.length || t2.references.length).sort((a, b) => a.id - b.id);
 }
 function layout(turns) {
   const index = /* @__PURE__ */ new Map();
@@ -261,10 +463,10 @@ var style_default = `.chasey,.ch-open{--ch-ink:#353048;--ch-muted:#736d80;--ch-p
 `;
 
 // src/canvas.jsx
-var import_react2 = __toESM(require("react"), 1);
+var import_react3 = __toESM(require("react"), 1);
 
 // src/typeset.jsx
-var import_react = __toESM(require("react"), 1);
+var import_react2 = __toESM(require("react"), 1);
 var import_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
 
 // src/math-text.js
@@ -293,24 +495,26 @@ function previewPrefix(text, limit) {
 }
 
 // src/typeset.jsx
-var labels = { code: { copyLabel: "\u590D\u5236", copiedLabel: "\u5DF2\u590D\u5236" }, footnotes: "\u811A\u6CE8" };
-var AnswerText = (0, import_react.memo)(function AnswerText2({ text }) {
-  return /* @__PURE__ */ import_react.default.createElement(import_dsh_client_ui_primitives.MarkdownText, { text: mathMarkdown(text), labels, omitHtml: true });
+var labels = (locale) => ({ code: { copyLabel: t("Copy", {}, locale), copiedLabel: t("Copied", {}, locale) }, footnotes: t("Footnotes", {}, locale) });
+var AnswerText = (0, import_react2.memo)(function AnswerText2({ text }) {
+  const locale = (0, import_react2.useContext)(LocaleContext);
+  return /* @__PURE__ */ import_react2.default.createElement(import_dsh_client_ui_primitives.MarkdownText, { text: mathMarkdown(text), labels: labels(locale), omitHtml: true });
 });
-var Typeset = (0, import_react.memo)(function Typeset2({ text, limit = Infinity, summary = false }) {
+var Typeset = (0, import_react2.memo)(function Typeset2({ text, limit = Infinity, summary = false }) {
+  const locale = (0, import_react2.useContext)(LocaleContext);
   const children = [];
   let used = 0;
   for (const part of mathParts(text)) {
     if (used >= limit) break;
     if (part.math) {
-      children.push(/* @__PURE__ */ import_react.default.createElement("div", { key: children.length, className: "ch-math-run" }, /* @__PURE__ */ import_react.default.createElement(import_dsh_client_ui_primitives.MarkdownText, { text: asMarkdown(part), labels, variant: "compact", omitHtml: true })));
+      children.push(/* @__PURE__ */ import_react2.default.createElement("div", { key: children.length, className: "ch-math-run" }, /* @__PURE__ */ import_react2.default.createElement(import_dsh_client_ui_primitives.MarkdownText, { text: asMarkdown(part), labels: labels(locale), variant: "compact", omitHtml: true })));
     } else {
       const plain = summary ? part.text.replace(/\*\*([^*]+)\*\*/g, "$1").replace(/^#{1,6}\s+/gm, "").replace(/\s+/g, " ") : part.text;
       children.push(previewPrefix(plain, limit - used));
     }
     used += part.text.length;
   }
-  return /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null, children);
+  return /* @__PURE__ */ import_react2.default.createElement(import_react2.default.Fragment, null, children);
 });
 
 // src/camera.js
@@ -335,7 +539,7 @@ function readPositions(storageKey) {
 }
 
 // src/canvas.jsx
-var title = (node) => node.questions.join(" / ") || "\u672C\u8F6E\u56DE\u7B54";
+var title = (node, locale) => node.questions.join(" / ") || t("Answer", {}, locale);
 var midpoint = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
 var distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 var nodePoint = (n, positions) => positions.get(n.id) ?? n;
@@ -347,61 +551,62 @@ function edgePath(a, b, kind) {
   const x1 = a.x + 36, y1 = a.y + 96, x2 = b.x + 36, y2 = b.y, mid = (y1 + y2) / 2;
   return "M " + x1 + " " + y1 + " C " + x1 + " " + mid + ", " + x2 + " " + mid + ", " + x2 + " " + y2;
 }
-var Cards = (0, import_react2.memo)(function Cards2({ graph, byId, positions, selected, returns, pick }) {
-  return /* @__PURE__ */ import_react2.default.createElement(import_react2.default.Fragment, null, /* @__PURE__ */ import_react2.default.createElement("svg", { className: "ch-wires", "aria-hidden": "true" }, graph.edges.map((e) => /* @__PURE__ */ import_react2.default.createElement("path", { key: e.source.id + "-" + e.target.id, className: "ch-line " + e.kind, d: edgePath(nodePoint(e.source, positions), nodePoint(e.target, positions), e.kind) })), returns.map(([a, b]) => /* @__PURE__ */ import_react2.default.createElement("path", { key: a + "-" + b, className: "ch-line return", d: edgePath(nodePoint(byId.get(a), positions), nodePoint(byId.get(b), positions), "return") }))), graph.nodes.map((n) => {
+var Cards = (0, import_react3.memo)(function Cards2({ graph, byId, positions, selected, returns, pick }) {
+  const locale = import_react3.default.useContext(LocaleContext);
+  return /* @__PURE__ */ import_react3.default.createElement(import_react3.default.Fragment, null, /* @__PURE__ */ import_react3.default.createElement("svg", { className: "ch-wires", "aria-hidden": "true" }, graph.edges.map((e) => /* @__PURE__ */ import_react3.default.createElement("path", { key: e.source.id + "-" + e.target.id, className: "ch-line " + e.kind, d: edgePath(nodePoint(e.source, positions), nodePoint(e.target, positions), e.kind) })), returns.map(([a, b]) => /* @__PURE__ */ import_react3.default.createElement("path", { key: a + "-" + b, className: "ch-line return", d: edgePath(nodePoint(byId.get(a), positions), nodePoint(byId.get(b), positions), "return") }))), graph.nodes.map((n) => {
     const point = nodePoint(n, positions);
-    return /* @__PURE__ */ import_react2.default.createElement("button", { key: n.id, "data-turn": n.id, className: "ch-card" + (n.id === selected ? " active" : ""), style: { left: point.x, top: point.y }, "aria-pressed": n.id === selected, "aria-label": "\u7B2C " + n.id + " \u8F6E\uFF1A" + title(n), onClick: () => pick(n) }, /* @__PURE__ */ import_react2.default.createElement("small", null, String(n.id).padStart(2, "0"), " ", /* @__PURE__ */ import_react2.default.createElement("span", null, n.parent ? "\u8FFD\u95EE \xB7 " + n.parent : "\u95EE\u7B54"), n.id === selected && /* @__PURE__ */ import_react2.default.createElement("em", null, "\u9605\u8BFB\u4E2D")), /* @__PURE__ */ import_react2.default.createElement("div", { className: "ch-card-title" }, /* @__PURE__ */ import_react2.default.createElement(Typeset, { text: title(n), limit: 180 })), /* @__PURE__ */ import_react2.default.createElement("div", { className: "ch-preview" }, /* @__PURE__ */ import_react2.default.createElement(Typeset, { text: n.answers[0] || "\u7B49\u5F85\u56DE\u7B54", limit: 180, summary: true })));
+    return /* @__PURE__ */ import_react3.default.createElement("button", { key: n.id, "data-turn": n.id, className: "ch-card" + (n.id === selected ? " active" : ""), style: { left: point.x, top: point.y }, "aria-pressed": n.id === selected, "aria-label": t("Turn {n}: {title}", { n: n.id, title: title(n, locale) }), onClick: () => pick(n) }, /* @__PURE__ */ import_react3.default.createElement("small", null, String(n.id).padStart(2, "0"), " ", /* @__PURE__ */ import_react3.default.createElement("span", null, n.parent ? t("From turn {n}", { n: n.parent }) : t("Q&A")), n.id === selected && /* @__PURE__ */ import_react3.default.createElement("em", null, t("Reading"))), /* @__PURE__ */ import_react3.default.createElement("div", { className: "ch-card-title" }, /* @__PURE__ */ import_react3.default.createElement(Typeset, { text: title(n, locale), limit: 180 })), /* @__PURE__ */ import_react3.default.createElement("div", { className: "ch-preview" }, /* @__PURE__ */ import_react3.default.createElement(Typeset, { text: n.answers[0] || t("Waiting for an answer"), limit: 180, summary: true })));
   }));
 });
 function Canvas({ sessionKey, graph, byId, selected, expanded, returns, onPick, empty, onError, linkBanner }) {
-  const viewport = (0, import_react2.useRef)(null);
+  const viewport = (0, import_react3.useRef)(null);
   const storageKey = "chasey.positions.v1." + sessionKey;
-  const [positions, setPositions] = (0, import_react2.useState)(() => readPositions(storageKey));
-  const positionsRef = (0, import_react2.useRef)(positions);
-  const [camera, setCamera] = (0, import_react2.useState)({ x: 0, y: 0, k: 1 });
-  const cameraRef = (0, import_react2.useRef)(camera);
-  const pointers = (0, import_react2.useRef)(/* @__PURE__ */ new Map());
-  const gesture = (0, import_react2.useRef)(null), swallowClick = (0, import_react2.useRef)(false), pinned = (0, import_react2.useRef)(null);
-  const [moving, setMoving] = (0, import_react2.useState)(false);
-  const [round, setRound] = (0, import_react2.useState)("");
-  const roundInput = (0, import_react2.useRef)(null);
+  const [positions, setPositions] = (0, import_react3.useState)(() => readPositions(storageKey));
+  const positionsRef = (0, import_react3.useRef)(positions);
+  const [camera, setCamera] = (0, import_react3.useState)({ x: 0, y: 0, k: 1 });
+  const cameraRef = (0, import_react3.useRef)(camera);
+  const pointers = (0, import_react3.useRef)(/* @__PURE__ */ new Map());
+  const gesture = (0, import_react3.useRef)(null), swallowClick = (0, import_react3.useRef)(false), pinned = (0, import_react3.useRef)(null);
+  const [moving, setMoving] = (0, import_react3.useState)(false);
+  const [round, setRound] = (0, import_react3.useState)("");
+  const roundInput = (0, import_react3.useRef)(null);
   const latest = graph.nodes.at(-1)?.id;
-  const data = (0, import_react2.useRef)(null);
+  const data = (0, import_react3.useRef)(null);
   data.current = { byId, selected, latest, onPick, onError };
-  const moveCamera = (0, import_react2.useCallback)((next) => {
+  const moveCamera = (0, import_react3.useCallback)((next) => {
     cameraRef.current = next;
     setCamera(next);
   }, []);
-  const center = (0, import_react2.useCallback)((id2, animate = false) => {
+  const center = (0, import_react3.useCallback)((id2, animate = false) => {
     const node = data.current.byId.get(id2), el = viewport.current;
     if (!el || !node || !el.clientWidth || !el.clientHeight) return;
     pinned.current = id2;
     el.classList.toggle("ch-focusing", animate);
     moveCamera(centered(nodePoint(node, positionsRef.current), cameraRef.current.k, el.clientWidth, el.clientHeight));
   }, [moveCamera]);
-  const freeCamera = (0, import_react2.useCallback)(() => {
+  const freeCamera = (0, import_react3.useCallback)(() => {
     pinned.current = null;
     viewport.current?.classList.remove("ch-focusing");
   }, []);
-  const pick = (0, import_react2.useCallback)((n) => {
+  const pick = (0, import_react3.useCallback)((n) => {
     center(n.id, true);
     data.current.onPick(n);
   }, [center]);
-  const initialized = (0, import_react2.useRef)(false);
-  (0, import_react2.useLayoutEffect)(() => {
+  const initialized = (0, import_react3.useRef)(false);
+  (0, import_react3.useLayoutEffect)(() => {
     if (latest == null) return;
     if (!initialized.current) {
       initialized.current = true;
       center(selected ?? latest);
     } else if (pinned.current != null) center(pinned.current);
   }, [byId, latest, center]);
-  (0, import_react2.useLayoutEffect)(() => {
+  (0, import_react3.useLayoutEffect)(() => {
     if (selected != null && pinned.current !== selected) center(selected, true);
   }, [selected, center]);
-  (0, import_react2.useLayoutEffect)(() => {
+  (0, import_react3.useLayoutEffect)(() => {
     if (pinned.current != null) center(pinned.current);
   }, [expanded, center]);
-  (0, import_react2.useLayoutEffect)(() => {
+  (0, import_react3.useLayoutEffect)(() => {
     const observer = new ResizeObserver(() => {
       if (pinned.current != null) center(pinned.current);
     });
@@ -419,7 +624,7 @@ function Canvas({ sessionKey, graph, byId, selected, expanded, returns, onPick, 
     }
     const target = byId.get(Number(round));
     if (!target) {
-      roundInput.current.setCustomValidity("\u5F53\u524D\u56FE\u8C31\u91CC\u6CA1\u6709\u8FD9\u4E00\u8F6E\u3002");
+      roundInput.current.setCustomValidity(t("This turn is not on the map."));
       roundInput.current.reportValidity();
       return;
     }
@@ -431,7 +636,7 @@ function Canvas({ sessionKey, graph, byId, selected, expanded, returns, onPick, 
     freeCamera();
     moveCamera(zoomAt(cameraRef.current, factor, { x: el.clientWidth / 2, y: el.clientHeight / 2 }));
   }
-  (0, import_react2.useEffect)(() => {
+  (0, import_react3.useEffect)(() => {
     const el = viewport.current;
     let safari = null;
     const wheel = (e) => {
@@ -477,7 +682,7 @@ function Canvas({ sessionKey, graph, byId, selected, expanded, returns, onPick, 
     try {
       localStorage.setItem(storageKey, JSON.stringify([...positionsRef.current]));
     } catch {
-      data.current.onError("\u5361\u7247\u5DF2\u79FB\u52A8\uFF0C\u672C\u673A\u672A\u80FD\u4FDD\u5B58\u8FD9\u6B21\u4F4D\u7F6E\u3002");
+      data.current.onError(t("Card moved. Its position could not be saved on this device."));
     }
   }
   function down(e) {
@@ -536,7 +741,7 @@ function Canvas({ sessionKey, graph, byId, selected, expanded, returns, onPick, 
       setMoving(false);
     }
   }
-  return /* @__PURE__ */ import_react2.default.createElement(import_react2.default.Fragment, null, /* @__PURE__ */ import_react2.default.createElement("div", { className: "ch-tools" }, /* @__PURE__ */ import_react2.default.createElement("span", { className: "ch-legend main" }, "\u987A\u5E8F"), /* @__PURE__ */ import_react2.default.createElement("span", { className: "ch-legend branch" }, "\u8FFD\u95EE"), /* @__PURE__ */ import_react2.default.createElement("span", { className: "ch-legend back" }, "\u56DE\u8FDE"), /* @__PURE__ */ import_react2.default.createElement("div", { className: "ch-zoom" }, /* @__PURE__ */ import_react2.default.createElement("button", { "aria-label": "\u7F29\u5C0F", disabled: camera.k <= MIN_ZOOM, onClick: () => zoomButton(1 / 1.2) }, "\u2212"), /* @__PURE__ */ import_react2.default.createElement("button", { title: "\u91CD\u7F6E\u7F29\u653E", onClick: () => zoomButton(1 / cameraRef.current.k) }, Math.round(camera.k * 100), "%"), /* @__PURE__ */ import_react2.default.createElement("button", { "aria-label": "\u653E\u5927", disabled: camera.k >= MAX_ZOOM, onClick: () => zoomButton(1.2) }, "+"), /* @__PURE__ */ import_react2.default.createElement("input", { ref: roundInput, className: "ch-round-input", inputMode: "numeric", value: round, "aria-label": "\u8DF3\u5230\u7B2C\u51E0\u8F6E", placeholder: "\u8F6E\u6B21", title: "\u8F93\u5165\u8F6E\u6B21\u540E\u6309\u56DE\u8F66", onChange: (e) => {
+  return /* @__PURE__ */ import_react3.default.createElement(import_react3.default.Fragment, null, /* @__PURE__ */ import_react3.default.createElement("div", { className: "ch-tools" }, /* @__PURE__ */ import_react3.default.createElement("span", { className: "ch-legend main" }, t("Sequence")), /* @__PURE__ */ import_react3.default.createElement("span", { className: "ch-legend branch" }, t("Follow-up")), /* @__PURE__ */ import_react3.default.createElement("span", { className: "ch-legend back" }, t("Return link")), /* @__PURE__ */ import_react3.default.createElement("div", { className: "ch-zoom" }, /* @__PURE__ */ import_react3.default.createElement("button", { "aria-label": t("Zoom out"), disabled: camera.k <= MIN_ZOOM, onClick: () => zoomButton(1 / 1.2) }, "\u2212"), /* @__PURE__ */ import_react3.default.createElement("button", { title: t("Reset zoom"), onClick: () => zoomButton(1 / cameraRef.current.k) }, Math.round(camera.k * 100), "%"), /* @__PURE__ */ import_react3.default.createElement("button", { "aria-label": t("Zoom in"), disabled: camera.k >= MAX_ZOOM, onClick: () => zoomButton(1.2) }, "+"), /* @__PURE__ */ import_react3.default.createElement("input", { ref: roundInput, className: "ch-round-input", inputMode: "numeric", value: round, "aria-label": t("Jump to turn"), placeholder: t("Turn"), title: t("Enter a turn number and press Enter"), onChange: (e) => {
     e.target.setCustomValidity("");
     setRound(e.target.value.replace(/[^0-9]/g, ""));
   }, onKeyDown: (e) => {
@@ -544,13 +749,13 @@ function Canvas({ sessionKey, graph, byId, selected, expanded, returns, onPick, 
       e.preventDefault();
       locate();
     }
-  } }), /* @__PURE__ */ import_react2.default.createElement("button", { disabled: latest == null, title: selected != null ? "\u5B9A\u4F4D\u6240\u9009\u5361\u7247" : "\u5B9A\u4F4D\u6700\u65B0\u4E00\u8F6E", onClick: locate }, "\u5B9A\u4F4D"))), linkBanner, /* @__PURE__ */ import_react2.default.createElement(
+  } }), /* @__PURE__ */ import_react3.default.createElement("button", { disabled: latest == null, title: selected != null ? t("Center selected card") : t("Center latest turn"), onClick: locate }, t("Locate")))), linkBanner, /* @__PURE__ */ import_react3.default.createElement(
     "div",
     {
       ref: viewport,
       className: "ch-viewport" + (moving ? " ch-moving" : ""),
       tabIndex: "0",
-      "aria-label": "\u4F1A\u8BDD\u56FE\u8C31\uFF0C\u53EF\u62D6\u52A8\u753B\u5E03\u548C\u5361\u7247\uFF0C\u53CC\u6307\u7F29\u653E",
+      "aria-label": t("Conversation map. Drag the canvas or cards. Pinch to zoom."),
       onPointerDown: down,
       onPointerMove: move,
       onPointerUp: up,
@@ -582,16 +787,16 @@ function Canvas({ sessionKey, graph, byId, selected, expanded, returns, onPick, 
       },
       style: { backgroundPosition: camera.x + "px " + camera.y + "px", backgroundSize: 17 * camera.k + "px " + 17 * camera.k + "px" }
     },
-    !graph.nodes.length && /* @__PURE__ */ import_react2.default.createElement("div", { className: "ch-empty" }, empty),
-    /* @__PURE__ */ import_react2.default.createElement("div", { className: "ch-plane", style: { transform: "translate(" + camera.x + "px," + camera.y + "px) scale(" + camera.k + ")" } }, /* @__PURE__ */ import_react2.default.createElement(Cards, { graph, byId, positions, selected, returns, pick }))
+    !graph.nodes.length && /* @__PURE__ */ import_react3.default.createElement("div", { className: "ch-empty" }, empty),
+    /* @__PURE__ */ import_react3.default.createElement("div", { className: "ch-plane", style: { transform: "translate(" + camera.x + "px," + camera.y + "px) scale(" + camera.k + ")" } }, /* @__PURE__ */ import_react3.default.createElement(Cards, { graph, byId, positions, selected, returns, pick }))
   ));
 }
 
 // src/reader.jsx
-var import_react4 = __toESM(require("react"), 1);
+var import_react5 = __toESM(require("react"), 1);
 
 // src/selection.jsx
-var import_react3 = __toESM(require("react"), 1);
+var import_react4 = __toESM(require("react"), 1);
 
 // src/quote-selection.js
 function selectedSource(selection, reader) {
@@ -628,13 +833,13 @@ function selectedSource(selection, reader) {
 // src/selection.jsx
 var import_react_dom = require("react-dom");
 function SelectionAction({ reader, active, onPick, onPreview }) {
-  const [anchor, setAnchor] = (0, import_react3.useState)(null);
-  const rangeRef = (0, import_react3.useRef)(null);
-  const dismiss = (0, import_react3.useCallback)(() => {
+  const [anchor, setAnchor] = (0, import_react4.useState)(null);
+  const rangeRef = (0, import_react4.useRef)(null);
+  const dismiss = (0, import_react4.useCallback)(() => {
     rangeRef.current = null;
     setAnchor(null);
   }, []);
-  (0, import_react3.useEffect)(() => {
+  (0, import_react4.useEffect)(() => {
     const element = reader.current;
     if (!active || !element) {
       dismiss();
@@ -703,7 +908,7 @@ function SelectionAction({ reader, active, onPick, onPreview }) {
     };
   }, [reader, active, onPreview, dismiss]);
   if (!anchor || !active || !reader.current) return null;
-  return (0, import_react_dom.createPortal)(/* @__PURE__ */ import_react3.default.createElement(
+  return (0, import_react_dom.createPortal)(/* @__PURE__ */ import_react4.default.createElement(
     "button",
     {
       type: "button",
@@ -716,8 +921,9 @@ function SelectionAction({ reader, active, onPick, onPreview }) {
         dismiss();
       }
     },
-    "\u8FFD\u95EE\u8FD9\u6BB5 ",
-    /* @__PURE__ */ import_react3.default.createElement("span", { "aria-hidden": "true" }, "\u2197")
+    t("Ask about this"),
+    " ",
+    /* @__PURE__ */ import_react4.default.createElement("span", { "aria-hidden": "true" }, "\u2197")
   ), reader.current.ownerDocument.body);
 }
 
@@ -733,18 +939,18 @@ var icons = {
   connect: "M5 6v7a4 4 0 0 0 4 4h10m-4-4 4 4-4 4"
 };
 function Icon({ name }) {
-  return /* @__PURE__ */ import_react4.default.createElement("svg", { viewBox: "0 0 24 24", width: "16", height: "16", fill: "none", stroke: "currentColor", strokeWidth: "1.7", strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, /* @__PURE__ */ import_react4.default.createElement("path", { d: icons[name] }));
+  return /* @__PURE__ */ import_react5.default.createElement("svg", { viewBox: "0 0 24 24", width: "16", height: "16", fill: "none", stroke: "currentColor", strokeWidth: "1.7", strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, /* @__PURE__ */ import_react5.default.createElement("path", { d: icons[name] }));
 }
 function IconButton({ label, icon, onClick, pressed, disabled }) {
-  return /* @__PURE__ */ import_react4.default.createElement("button", { type: "button", className: "ch-icon" + (pressed !== void 0 ? " ch-view-toggle" : ""), title: label, "aria-label": label, "aria-pressed": pressed, onClick, disabled }, /* @__PURE__ */ import_react4.default.createElement(Icon, { name: icon }), pressed !== void 0 && /* @__PURE__ */ import_react4.default.createElement("span", null, label));
+  return /* @__PURE__ */ import_react5.default.createElement("button", { type: "button", className: "ch-icon" + (pressed !== void 0 ? " ch-view-toggle" : ""), title: label, "aria-label": label, "aria-pressed": pressed, onClick, disabled }, /* @__PURE__ */ import_react5.default.createElement(Icon, { name: icon }), pressed !== void 0 && /* @__PURE__ */ import_react5.default.createElement("span", null, label));
 }
 function Reader({ node, send, maySend, drafts, close, connect, outgoing, unlink, expanded, toggleExpanded, previous, next, visitSource }) {
-  const [question, setQuestion] = (0, import_react4.useState)(() => drafts.get(node.id)?.question ?? ""), [quote, setQuote] = (0, import_react4.useState)(() => drafts.get(node.id)?.quote ?? ""), [status, setStatus] = (0, import_react4.useState)(""), [busy, setBusy] = (0, import_react4.useState)(false);
-  const reader = (0, import_react4.useRef)(null), input = (0, import_react4.useRef)(null), pending = (0, import_react4.useRef)(false);
-  const highlightName = "chasey-" + import_react4.default.useId().replace(/[^a-z0-9-]/gi, "");
+  const [question, setQuestion] = (0, import_react5.useState)(() => drafts.get(node.id)?.question ?? ""), [quote, setQuote] = (0, import_react5.useState)(() => drafts.get(node.id)?.quote ?? ""), [status, setStatus] = (0, import_react5.useState)(""), [busy, setBusy] = (0, import_react5.useState)(false);
+  const reader = (0, import_react5.useRef)(null), input = (0, import_react5.useRef)(null), pending = (0, import_react5.useRef)(false);
+  const highlightName = "chasey-" + import_react5.default.useId().replace(/[^a-z0-9-]/gi, "");
   const clearMark = () => globalThis.CSS?.highlights?.delete(highlightName);
-  (0, import_react4.useEffect)(() => () => globalThis.CSS?.highlights?.delete(highlightName), [highlightName]);
-  (0, import_react4.useEffect)(() => {
+  (0, import_react5.useEffect)(() => () => globalThis.CSS?.highlights?.delete(highlightName), [highlightName]);
+  (0, import_react5.useEffect)(() => {
     if (question || quote) drafts.set(node.id, { question, quote });
     else drafts.delete(node.id);
   }, [drafts, node.id, question, quote]);
@@ -766,22 +972,22 @@ function Reader({ node, send, maySend, drafts, close, connect, outgoing, unlink,
     try {
       await send(node, quote || excerpt(node), question);
       drafts.delete(node.id);
-      setStatus("\u5DF2\u63D0\u4EA4\u5230\u672C\u4F1A\u8BDD\u3002\u56DE\u7B54\u5B8C\u6210\u540E\u4F1A\u663E\u793A\u5728\u56FE\u8C31\u4E0A\u3002");
+      setStatus(t("Sent. The answer will appear on the map when complete."));
       setQuestion("");
       setQuote("");
       clearMark();
     } catch (e) {
-      setStatus("\u63D0\u4EA4\u5931\u8D25\uFF1A" + (e.message || String(e)));
+      setStatus(t("Could not send: {error}", { error: e.message || String(e) }));
     } finally {
       pending.current = false;
       setBusy(false);
     }
   }
   const heading = "ch-round-" + node.id;
-  return /* @__PURE__ */ import_react4.default.createElement("section", { className: "ch-reader" + (expanded ? " ch-expanded" : ""), "aria-labelledby": heading }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "ch-readbar" }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "ch-round-nav" }, /* @__PURE__ */ import_react4.default.createElement(IconButton, { icon: "previous", label: "\u4E0A\u4E00\u8F6E", onClick: previous, disabled: !previous }), /* @__PURE__ */ import_react4.default.createElement("strong", { id: heading }, "\u7B2C ", node.id, " \u8F6E"), /* @__PURE__ */ import_react4.default.createElement(IconButton, { icon: "next", label: "\u4E0B\u4E00\u8F6E", onClick: next, disabled: !next })), /* @__PURE__ */ import_react4.default.createElement("div", { className: "ch-read-actions" }, /* @__PURE__ */ import_react4.default.createElement("button", { type: "button", className: "ch-connect", onClick: connect }, /* @__PURE__ */ import_react4.default.createElement(Icon, { name: "connect" }), "\u8FDE\u56DE\u5361\u7247"), /* @__PURE__ */ import_react4.default.createElement(IconButton, { icon: expanded ? "collapse" : "expand", label: expanded ? "\u8FD4\u56DE\u753B\u5E03" : "\u5C55\u5F00\u9605\u8BFB", onClick: toggleExpanded, pressed: expanded }), /* @__PURE__ */ import_react4.default.createElement(IconButton, { icon: "close", label: "\u5173\u95ED\u539F\u6587", onClick: close }))), /* @__PURE__ */ import_react4.default.createElement("div", { className: "ch-scroll", ref: reader, tabIndex: 0, "aria-label": "\u672C\u8F6E\u539F\u6587" }, /* @__PURE__ */ import_react4.default.createElement("article", { className: "ch-article" }, node.questions.length > 0 && /* @__PURE__ */ import_react4.default.createElement("header", { className: "ch-question" }, /* @__PURE__ */ import_react4.default.createElement("span", { className: "ch-byline" }, "\u6211\u7684\u63D0\u95EE"), node.questions.map((text, i) => /* @__PURE__ */ import_react4.default.createElement("div", { role: "heading", "aria-level": 3, className: "ch-question-text", key: i }, /* @__PURE__ */ import_react4.default.createElement(Typeset, { text })))), node.references.map((ref, i) => /* @__PURE__ */ import_react4.default.createElement("blockquote", { key: i }, ref.parent != null && ref.parent !== node.id ? /* @__PURE__ */ import_react4.default.createElement("button", { className: "ch-ref-source", onClick: () => visitSource(ref.parent) }, "\u5F15\u7528\u7B2C ", ref.parent, " \u8F6E\u539F\u6587 \u2197") : /* @__PURE__ */ import_react4.default.createElement("small", null, ref.parent === node.id ? "\u5F15\u7528\u672C\u8F6E\u539F\u6587" : "\u5F15\u7528 \xB7 \u6765\u6E90\u672A\u786E\u8BA4"), /* @__PURE__ */ import_react4.default.createElement(Typeset, { text: ref.text }))), /* @__PURE__ */ import_react4.default.createElement("div", { className: "ch-response" }, /* @__PURE__ */ import_react4.default.createElement("span", { className: "ch-byline" }, "\u56DE\u7B54\u539F\u6587"), node.answers.map((text, i) => /* @__PURE__ */ import_react4.default.createElement("div", { className: "ch-prose", key: i }, /* @__PURE__ */ import_react4.default.createElement(AnswerText, { text }))), !node.answers.length && /* @__PURE__ */ import_react4.default.createElement("p", { role: "status", className: "ch-pending" }, "\u7B49\u5F85\u672C\u8F6E\u56DE\u7B54\u2026")))), /* @__PURE__ */ import_react4.default.createElement("style", null, "::highlight(" + highlightName + "){background-color:#e9d7fa;color:#30223c}"), /* @__PURE__ */ import_react4.default.createElement(SelectionAction, { reader, active: maySend && !busy, onPreview: setQuote, onPick: startFollowUp }), !maySend && /* @__PURE__ */ import_react4.default.createElement("div", { className: "ch-status" }, "\u6B64\u4F1A\u8BDD\u5F53\u524D\u4E3A\u53EA\u8BFB\uFF0C\u65E0\u6CD5\u63D0\u4EA4\u8FFD\u95EE\u3002"), outgoing.length > 0 && /* @__PURE__ */ import_react4.default.createElement("div", { className: "ch-status" }, outgoing.map(([, b]) => /* @__PURE__ */ import_react4.default.createElement("button", { key: b, "aria-label": "\u79FB\u9664\u56DE\u5230\u7B2C " + b + " \u8F6E\u7684\u8FDE\u7EBF", onClick: () => unlink(b) }, "\u56DE\u5230\u7B2C ", b, " \u8F6E \xD7"))), maySend && /* @__PURE__ */ import_react4.default.createElement("form", { onSubmit: submit }, /* @__PURE__ */ import_react4.default.createElement("div", { className: "ch-composer" }, quote && /* @__PURE__ */ import_react4.default.createElement("div", { className: "ch-quote" }, /* @__PURE__ */ import_react4.default.createElement("strong", null, "\u5F15\u7528"), /* @__PURE__ */ import_react4.default.createElement("div", { className: "ch-quote-preview" }, /* @__PURE__ */ import_react4.default.createElement(Typeset, { text: quote, limit: 240 })), /* @__PURE__ */ import_react4.default.createElement("button", { type: "button", "aria-label": "\u6E05\u9664\u9009\u6BB5", onClick: () => {
+  return /* @__PURE__ */ import_react5.default.createElement("section", { className: "ch-reader" + (expanded ? " ch-expanded" : ""), "aria-labelledby": heading }, /* @__PURE__ */ import_react5.default.createElement("div", { className: "ch-readbar" }, /* @__PURE__ */ import_react5.default.createElement("div", { className: "ch-round-nav" }, /* @__PURE__ */ import_react5.default.createElement(IconButton, { icon: "previous", label: t("Previous turn"), onClick: previous, disabled: !previous }), /* @__PURE__ */ import_react5.default.createElement("strong", { id: heading }, t("Turn {n}", { n: node.id })), /* @__PURE__ */ import_react5.default.createElement(IconButton, { icon: "next", label: t("Next turn"), onClick: next, disabled: !next })), /* @__PURE__ */ import_react5.default.createElement("div", { className: "ch-read-actions" }, /* @__PURE__ */ import_react5.default.createElement("button", { type: "button", className: "ch-connect", onClick: connect }, /* @__PURE__ */ import_react5.default.createElement(Icon, { name: "connect" }), t("Link to card")), /* @__PURE__ */ import_react5.default.createElement(IconButton, { icon: expanded ? "collapse" : "expand", label: expanded ? t("Back to map") : t("Expand reader"), onClick: toggleExpanded, pressed: expanded }), /* @__PURE__ */ import_react5.default.createElement(IconButton, { icon: "close", label: t("Close reader"), onClick: close }))), /* @__PURE__ */ import_react5.default.createElement("div", { className: "ch-scroll", ref: reader, tabIndex: 0, "aria-label": t("Original messages") }, /* @__PURE__ */ import_react5.default.createElement("article", { className: "ch-article" }, node.questions.length > 0 && /* @__PURE__ */ import_react5.default.createElement("header", { className: "ch-question" }, /* @__PURE__ */ import_react5.default.createElement("span", { className: "ch-byline" }, t("My question")), node.questions.map((text, i) => /* @__PURE__ */ import_react5.default.createElement("div", { role: "heading", "aria-level": 3, className: "ch-question-text", key: i }, /* @__PURE__ */ import_react5.default.createElement(Typeset, { text })))), node.references.map((ref, i) => /* @__PURE__ */ import_react5.default.createElement("blockquote", { key: i }, ref.parent != null && ref.parent !== node.id ? /* @__PURE__ */ import_react5.default.createElement("button", { className: "ch-ref-source", onClick: () => visitSource(ref.parent) }, t("Quoted from turn {n} \u2197", { n: ref.parent })) : /* @__PURE__ */ import_react5.default.createElement("small", null, ref.parent === node.id ? t("Quoted from this turn") : t("Quote \xB7 source unconfirmed")), /* @__PURE__ */ import_react5.default.createElement(Typeset, { text: ref.text }))), /* @__PURE__ */ import_react5.default.createElement("div", { className: "ch-response" }, /* @__PURE__ */ import_react5.default.createElement("span", { className: "ch-byline" }, t("Original answer")), node.answers.map((text, i) => /* @__PURE__ */ import_react5.default.createElement("div", { className: "ch-prose", key: i }, /* @__PURE__ */ import_react5.default.createElement(AnswerText, { text }))), !node.answers.length && /* @__PURE__ */ import_react5.default.createElement("p", { role: "status", className: "ch-pending" }, t("Waiting for this answer\u2026"))))), /* @__PURE__ */ import_react5.default.createElement("style", null, "::highlight(" + highlightName + "){background-color:#e9d7fa;color:#30223c}"), /* @__PURE__ */ import_react5.default.createElement(SelectionAction, { reader, active: maySend && !busy, onPreview: setQuote, onPick: startFollowUp }), !maySend && /* @__PURE__ */ import_react5.default.createElement("div", { className: "ch-status" }, t("This conversation is read-only.")), outgoing.length > 0 && /* @__PURE__ */ import_react5.default.createElement("div", { className: "ch-status" }, outgoing.map(([, b]) => /* @__PURE__ */ import_react5.default.createElement("button", { key: b, "aria-label": t("Remove link to turn {n}", { n: b }), onClick: () => unlink(b) }, t("Back to turn {n} \xD7", { n: b })))), maySend && /* @__PURE__ */ import_react5.default.createElement("form", { onSubmit: submit }, /* @__PURE__ */ import_react5.default.createElement("div", { className: "ch-composer" }, quote && /* @__PURE__ */ import_react5.default.createElement("div", { className: "ch-quote" }, /* @__PURE__ */ import_react5.default.createElement("strong", null, t("Quote")), /* @__PURE__ */ import_react5.default.createElement("div", { className: "ch-quote-preview" }, /* @__PURE__ */ import_react5.default.createElement(Typeset, { text: quote, limit: 240 })), /* @__PURE__ */ import_react5.default.createElement("button", { type: "button", "aria-label": t("Clear selection"), onClick: () => {
     setQuote("");
     clearMark();
-  } }, "\xD7")), /* @__PURE__ */ import_react4.default.createElement("div", { className: "ch-entry" }, /* @__PURE__ */ import_react4.default.createElement("textarea", { rows: 1, ref: input, "aria-label": quote ? "\u6CBF\u9009\u6BB5\u8FFD\u95EE" : "\u6CBF\u672C\u8F6E\u8FFD\u95EE", value: question, disabled: busy, onChange: (e) => setQuestion(e.target.value), placeholder: quote ? "\u9488\u5BF9\u8FD9\u6BB5\u539F\u6587\u63D0\u95EE\u2026" : "\u6CBF\u7740\u8FD9\u4E00\u8F6E\u7EE7\u7EED\u8FFD\u95EE\u2026" }), /* @__PURE__ */ import_react4.default.createElement("button", { className: "ch-send", "aria-label": "\u53D1\u9001\u5230\u672C\u4F1A\u8BDD", title: "\u53D1\u9001\u5230\u672C\u4F1A\u8BDD", disabled: busy || !question.trim() }, /* @__PURE__ */ import_react4.default.createElement(Icon, { name: "send" }))))), status && /* @__PURE__ */ import_react4.default.createElement("div", { className: "ch-status", role: "status" }, status));
+  } }, "\xD7")), /* @__PURE__ */ import_react5.default.createElement("div", { className: "ch-entry" }, /* @__PURE__ */ import_react5.default.createElement("textarea", { rows: 1, ref: input, "aria-label": quote ? t("Ask about the selection") : t("Ask about this turn"), value: question, disabled: busy, onChange: (e) => setQuestion(e.target.value), placeholder: quote ? t("Ask about this passage\u2026") : t("Ask a follow-up\u2026") }), /* @__PURE__ */ import_react5.default.createElement("button", { className: "ch-send", "aria-label": t("Send to this conversation"), title: t("Send to this conversation"), disabled: busy || !question.trim() }, /* @__PURE__ */ import_react5.default.createElement(Icon, { name: "send" }))))), status && /* @__PURE__ */ import_react5.default.createElement("div", { className: "ch-status", role: "status" }, status));
 }
 
 // src/plugin.jsx
@@ -789,20 +995,22 @@ var tabKind = "chasey-map";
 var id = "chasey-harness";
 var relevant = (e) => ["turn/start", "turn/end", "user/message", "assistant/message"].includes(e.event.type);
 function history(source) {
-  let lastRevision, rows = [];
+  let lastLocale, lastRevision, rows = [];
   const read = () => {
-    const window = source.getSnapshot();
-    if (lastRevision === window.revision) return rows;
-    const change = window.change;
-    const skip = lastRevision + 1 === window.revision && change.kind === "append" && !change.entries.some(relevant);
-    lastRevision = window.revision;
-    if (!skip) rows = project(window.entries);
+    const window2 = source.getSnapshot();
+    const locale = deviceLocale();
+    if (lastLocale === locale && lastRevision === window2.revision) return rows;
+    const change = window2.change;
+    const skip = lastLocale === locale && lastRevision + 1 === window2.revision && change.kind === "append" && !change.entries.some(relevant);
+    lastRevision = window2.revision;
+    lastLocale = locale;
+    if (!skip) rows = project(window2.entries, locale);
     return rows;
   };
   return { getSnapshot: read, subscribe: (notify) => source.subscribe(notify) };
 }
 function MapIcon() {
-  return /* @__PURE__ */ import_react5.default.createElement("svg", { width: "17", height: "17", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.7", "aria-hidden": "true" }, /* @__PURE__ */ import_react5.default.createElement("path", { d: "M6 5v14m0-9c4 0 11 1 11-5m0 8c0 4-7 3-11 5" }), /* @__PURE__ */ import_react5.default.createElement("circle", { cx: "6", cy: "4", r: "2" }), /* @__PURE__ */ import_react5.default.createElement("circle", { cx: "6", cy: "20", r: "2" }), /* @__PURE__ */ import_react5.default.createElement("circle", { cx: "17", cy: "4", r: "2" }), /* @__PURE__ */ import_react5.default.createElement("circle", { cx: "17", cy: "12", r: "2" }));
+  return /* @__PURE__ */ import_react6.default.createElement("svg", { width: "17", height: "17", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.7", "aria-hidden": "true" }, /* @__PURE__ */ import_react6.default.createElement("path", { d: "M6 5v14m0-9c4 0 11 1 11-5m0 8c0 4-7 3-11 5" }), /* @__PURE__ */ import_react6.default.createElement("circle", { cx: "6", cy: "4", r: "2" }), /* @__PURE__ */ import_react6.default.createElement("circle", { cx: "6", cy: "20", r: "2" }), /* @__PURE__ */ import_react6.default.createElement("circle", { cx: "17", cy: "4", r: "2" }), /* @__PURE__ */ import_react6.default.createElement("circle", { cx: "17", cy: "12", r: "2" }));
 }
 function loadLinks(key) {
   try {
@@ -812,27 +1020,28 @@ function loadLinks(key) {
   }
 }
 function Panel({ sessionKey, useTurns, useSession, useAccess, loadAll, send }) {
+  const locale = useDeviceLocale();
   const turns = useTurns((v) => v);
-  const graph = (0, import_react5.useMemo)(() => layout(turns), [turns]);
+  const graph = (0, import_react6.useMemo)(() => layout(turns), [turns]);
   const hasMore = useSession((v) => v.hasMore);
   const loading = useSession((v) => v.loadingOlder);
   const historyError = useSession((v) => v.historyLoadStatus === "error");
   const openError = useSession((v) => v.openError);
   const opened = useSession((v) => v.openState === "open");
   const maySend = useAccess("session/prompt") !== false;
-  const [request, setRequest] = (0, import_react5.useState)(0);
-  const [failure, setFailure] = (0, import_react5.useState)("");
-  const [selected, select] = (0, import_react5.useState)(null);
-  const [expanded, setExpanded] = (0, import_react5.useState)(false);
-  const drafts = (0, import_react5.useRef)(/* @__PURE__ */ new Map());
-  const [linkStart, setLinkStart] = (0, import_react5.useState)(null);
-  const pendingFollowUp = (0, import_react5.useRef)(null);
+  const [request, setRequest] = (0, import_react6.useState)(0);
+  const [failure, setFailure] = (0, import_react6.useState)("");
+  const [selected, select] = (0, import_react6.useState)(null);
+  const [expanded, setExpanded] = (0, import_react6.useState)(false);
+  const drafts = (0, import_react6.useRef)(/* @__PURE__ */ new Map());
+  const [linkStart, setLinkStart] = (0, import_react6.useState)(null);
+  const pendingFollowUp = (0, import_react6.useRef)(null);
   const storageKey = "chasey.returns.v1." + sessionKey;
-  const [returns, setReturns] = (0, import_react5.useState)(() => loadLinks(storageKey));
+  const [returns, setReturns] = (0, import_react6.useState)(() => loadLinks(storageKey));
   const selectedIndex = graph.nodes.findIndex((n) => n.id === selected);
   const selectedNode = graph.nodes[selectedIndex];
-  const byId = (0, import_react5.useMemo)(() => new Map(graph.nodes.map((n) => [n.id, n])), [graph]);
-  (0, import_react5.useEffect)(() => {
+  const byId = (0, import_react6.useMemo)(() => new Map(graph.nodes.map((n) => [n.id, n])), [graph]);
+  (0, import_react6.useEffect)(() => {
     if (!opened || !hasMore) return;
     let active = true;
     Promise.resolve(loadAll()).catch((err) => {
@@ -853,7 +1062,7 @@ function Panel({ sessionKey, useTurns, useSession, useAccess, loadAll, send }) {
       throw err;
     }
   }
-  (0, import_react5.useEffect)(() => {
+  (0, import_react6.useEffect)(() => {
     const pending = pendingFollowUp.current;
     if (!pending || selected !== pending.parent) return;
     const next = turns.find((n) => n.id > pending.after && n.questions.includes(pending.question) && n.references.some((ref) => ref.parent === pending.parent && ref.text === pending.quote));
@@ -868,7 +1077,7 @@ function Panel({ sessionKey, useTurns, useSession, useAccess, loadAll, send }) {
       setReturns(next);
       return true;
     } catch {
-      setFailure("\u65E0\u6CD5\u4FDD\u5B58\u8FDE\u7EBF\uFF0C\u8BF7\u68C0\u67E5\u6B64\u7A97\u53E3\u7684\u672C\u5730\u5B58\u50A8\u6743\u9650\u3002");
+      setFailure(t("Could not save the link. Check local storage permissions."));
       return false;
     }
   }
@@ -881,11 +1090,11 @@ function Panel({ sessionKey, useTurns, useSession, useAccess, loadAll, send }) {
     }
     select(n.id);
   }
-  const returnEdges = (0, import_react5.useMemo)(() => returns.filter(([a, b]) => byId.has(a) && byId.has(b)), [returns, byId]);
-  return /* @__PURE__ */ import_react5.default.createElement("section", { className: "chasey", "aria-label": "\u8FFD\u8FFD\u4F1A\u8BDD\u56FE\u8C31" }, /* @__PURE__ */ import_react5.default.createElement("header", null, /* @__PURE__ */ import_react5.default.createElement("div", null, /* @__PURE__ */ import_react5.default.createElement(MapIcon, null), /* @__PURE__ */ import_react5.default.createElement("strong", null, "\u8FFD\u8FFD"), /* @__PURE__ */ import_react5.default.createElement("span", { className: "ch-sub" }, "\u4F1A\u8BDD\u56FE\u8C31")), /* @__PURE__ */ import_react5.default.createElement("span", { className: "ch-count" }, turns.length, " \u8F6E")), (hasMore || historyError || openError || failure) && /* @__PURE__ */ import_react5.default.createElement("div", { className: "ch-status", role: "status" }, failure || (openError ? "\u4F1A\u8BDD\u6682\u65F6\u65E0\u6CD5\u6253\u5F00" : historyError ? "\u8F83\u65E9\u8BB0\u5F55\u52A0\u8F7D\u5931\u8D25\uFF0C\u5F53\u524D\u5C55\u793A\u90E8\u5206\u56FE\u8C31" : "\u6B63\u5728\u8BFB\u53D6\u8F83\u65E9\u7684\u4F1A\u8BDD\u8BB0\u5F55\u2026"), " ", (historyError || failure) && /* @__PURE__ */ import_react5.default.createElement("button", { disabled: loading, onClick: () => {
+  const returnEdges = (0, import_react6.useMemo)(() => returns.filter(([a, b]) => byId.has(a) && byId.has(b)), [returns, byId]);
+  return /* @__PURE__ */ import_react6.default.createElement(LocaleContext.Provider, { value: locale }, /* @__PURE__ */ import_react6.default.createElement("section", { lang: locale, className: "chasey", "aria-label": t("Chasey conversation map") }, /* @__PURE__ */ import_react6.default.createElement("header", null, /* @__PURE__ */ import_react6.default.createElement("div", null, /* @__PURE__ */ import_react6.default.createElement(MapIcon, null), /* @__PURE__ */ import_react6.default.createElement("strong", null, t("Chasey")), /* @__PURE__ */ import_react6.default.createElement("span", { className: "ch-sub" }, t("Conversation map"))), /* @__PURE__ */ import_react6.default.createElement("span", { className: "ch-count" }, t(turns.length === 1 ? "{n} turn" : "{n} turns", { n: turns.length }))), (hasMore || historyError || openError || failure) && /* @__PURE__ */ import_react6.default.createElement("div", { className: "ch-status", role: "status" }, failure || (openError ? t("This conversation is temporarily unavailable.") : historyError ? t("Earlier turns could not load. Showing a partial map.") : t("Loading earlier turns\u2026")), " ", (historyError || failure) && /* @__PURE__ */ import_react6.default.createElement("button", { disabled: loading, onClick: () => {
     setFailure("");
     setRequest((x) => x + 1);
-  } }, "\u91CD\u8BD5")), /* @__PURE__ */ import_react5.default.createElement(
+  } }, t("Retry"))), /* @__PURE__ */ import_react6.default.createElement(
     Canvas,
     {
       sessionKey,
@@ -896,10 +1105,10 @@ function Panel({ sessionKey, useTurns, useSession, useAccess, loadAll, send }) {
       returns: returnEdges,
       onPick: pick,
       onError: setFailure,
-      empty: opened && !loading ? "\u8FD9\u6BB5\u4F1A\u8BDD\u8FD8\u6CA1\u6709\u53EF\u5C55\u793A\u7684\u95EE\u7B54\u3002" : "\u6B63\u5728\u8BFB\u53D6\u4F1A\u8BDD\u2026",
-      linkBanner: linkStart !== null && /* @__PURE__ */ import_react5.default.createElement("div", { className: "ch-status" }, "\u9009\u62E9\u7B2C ", linkStart, " \u8F6E\u8981\u8FDE\u56DE\u7684\u5361\u7247 ", /* @__PURE__ */ import_react5.default.createElement("button", { onClick: () => setLinkStart(null) }, "\u53D6\u6D88"))
+      empty: opened && !loading ? t("This conversation has no turns to display yet.") : t("Loading conversation\u2026"),
+      linkBanner: linkStart !== null && /* @__PURE__ */ import_react6.default.createElement("div", { className: "ch-status" }, t("Choose a card to link back to from turn {n}.", { n: linkStart }), " ", /* @__PURE__ */ import_react6.default.createElement("button", { onClick: () => setLinkStart(null) }, t("Cancel")))
     }
-  ), selectedNode && linkStart === null && /* @__PURE__ */ import_react5.default.createElement(
+  ), selectedNode && linkStart === null && /* @__PURE__ */ import_react6.default.createElement(
     Reader,
     {
       key: selectedNode.id,
@@ -927,7 +1136,11 @@ function Panel({ sessionKey, useTurns, useSession, useAccess, loadAll, send }) {
       outgoing: returnEdges.filter((p) => p[0] === selectedNode.id),
       unlink: (b) => saveLinks(returns.filter((p) => p[0] !== selectedNode.id || p[1] !== b))
     }
-  ));
+  )));
+}
+function OpenButton({ onOpen }) {
+  const locale = useDeviceLocale();
+  return /* @__PURE__ */ import_react6.default.createElement("button", { lang: locale, type: "button", className: "ch-open", title: t("Open the map for this conversation"), onClick: onOpen }, /* @__PURE__ */ import_react6.default.createElement(MapIcon, null), t("Chasey"));
 }
 var inject = ["slots", "sessions", "sidebarRightTabs", "sidebarRight"];
 function apply(ctx) {
@@ -938,11 +1151,11 @@ function apply(ctx) {
     document.head.append(sheet);
     return () => sheet.remove();
   }, "chasey: panel styles");
-  ctx.effect(() => ctx.sidebarRightTabs.register({ id, kind: tabKind, title: () => "\u8FFD\u8FFD", guide: [{ id: "open", order: 40, title: () => "\u8FFD\u8FFD \xB7 \u4F1A\u8BDD\u56FE\u8C31", description: () => "\u6CBF\u539F\u6587\u5206\u53C9\u8FFD\u95EE\uFF0C\u8FDE\u56DE\u4E3B\u7EBF\u3002" }] }), "chasey: session map");
+  ctx.effect(() => ctx.sidebarRightTabs.register({ id, kind: tabKind, title: () => t("Chasey"), guide: [{ id: "open", order: 40, title: () => t("Chasey \xB7 Conversation map"), description: () => t("Ask about a passage and link back to the main thread.") }] }), "chasey: session map");
   const slot = "sidebar.right.pane.tab";
   ctx.slots.inject(slot, () => ctx.slots.register({ name: slot, key: id, inject(sessionId) {
     const binding = ctx.sessions.binding(sessionId);
-    if (!binding) throw new Error("\u8FFD\u8FFD\u65E0\u6CD5\u7ED1\u5B9A\u6B64\u4F1A\u8BDD\u3002");
+    if (!binding) throw new Error(t("Chasey could not open this conversation."));
     if (!histories.has(binding)) histories.set(binding, history(binding.eventSource));
     return {
       hooks: { turns: histories.get(binding) },
@@ -953,8 +1166,8 @@ function apply(ctx) {
         if (!result.ok) throw new Error(result.error.message || result.error.code);
       }
     };
-  } }, (props) => /* @__PURE__ */ import_react5.default.createElement(Panel, { key: props.sessionKey, ...props })));
+  } }, (props) => /* @__PURE__ */ import_react6.default.createElement(Panel, { key: props.sessionKey, ...props })));
   const header = "conversation.session.header.actions";
-  ctx.slots.inject(header, () => ctx.slots.register({ name: header, id, order: 15 }, () => /* @__PURE__ */ import_react5.default.createElement("button", { type: "button", className: "ch-open", title: "\u6253\u5F00\u5F53\u524D\u4F1A\u8BDD\u7684\u8FFD\u8FFD\u56FE\u8C31", onClick: () => ctx.sidebarRight.openTab(tabKind) }, /* @__PURE__ */ import_react5.default.createElement(MapIcon, null), "\u8FFD\u8FFD")));
+  ctx.slots.inject(header, () => ctx.slots.register({ name: header, id, order: 15 }, () => /* @__PURE__ */ import_react6.default.createElement(OpenButton, { onOpen: () => ctx.sidebarRight.openTab(tabKind) })));
 }
 return module.exports;}});

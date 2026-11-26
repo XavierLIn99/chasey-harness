@@ -1,3 +1,5 @@
+import { useDeviceLocale, LocaleContext } from './use-locale.js'
+import { deviceLocale, t } from './i18n.js'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { followUpText, layout, project, validReturns } from './map.js'
 import styles from './style.css'
@@ -10,14 +12,16 @@ const relevant = e => ['turn/start', 'turn/end', 'user/message', 'assistant/mess
 
 // A live token delta doesn't change a completed answer. Build only when the visible log changes.
 function history(source) {
-  let lastRevision, rows = []
+  let lastLocale, lastRevision, rows = []
   const read = () => {
     const window = source.getSnapshot()
-    if (lastRevision === window.revision) return rows
+    const locale = deviceLocale()
+    if (lastLocale === locale && lastRevision === window.revision) return rows
     const change = window.change
-    const skip = lastRevision + 1 === window.revision && change.kind === 'append' && !change.entries.some(relevant)
+    const skip = lastLocale === locale && lastRevision + 1 === window.revision && change.kind === 'append' && !change.entries.some(relevant)
     lastRevision = window.revision
-    if (!skip) rows = project(window.entries)
+    lastLocale = locale
+    if (!skip) rows = project(window.entries, locale)
     return rows
   }
   return { getSnapshot: read, subscribe: notify => source.subscribe(notify) }
@@ -31,6 +35,7 @@ function loadLinks(key) {
 }
 
 function Panel({ sessionKey, useTurns, useSession, useAccess, loadAll, send }) {
+  const locale = useDeviceLocale()
   const turns = useTurns(v => v)
   const graph = useMemo(() => layout(turns), [turns])
   const hasMore = useSession(v => v.hasMore)
@@ -73,7 +78,7 @@ function Panel({ sessionKey, useTurns, useSession, useAccess, loadAll, send }) {
   },[turns, selected])
   function saveLinks(next) {
     try { localStorage.setItem(storageKey, JSON.stringify(next)); setReturns(next); return true }
-    catch { setFailure('无法保存连线，请检查此窗口的本地存储权限。'); return false }
+    catch { setFailure(t('Could not save the link. Check local storage permissions.')); return false }
   }
   function pick(n) {
     pendingFollowUp.current = null
@@ -85,12 +90,12 @@ function Panel({ sessionKey, useTurns, useSession, useAccess, loadAll, send }) {
     select(n.id)
   }
   const returnEdges = useMemo(() => returns.filter(([a,b]) => byId.has(a) && byId.has(b)), [returns, byId])
-  return <section className="chasey" aria-label="追追会话图谱">
-    <header><div><MapIcon/><strong>追追</strong><span className="ch-sub">会话图谱</span></div><span className="ch-count">{turns.length} 轮</span></header>
-    {(hasMore || historyError || openError || failure) && <div className="ch-status" role="status">{failure || (openError ? '会话暂时无法打开' : historyError ? '较早记录加载失败，当前展示部分图谱' : '正在读取较早的会话记录…')} {(historyError || failure) && <button disabled={loading} onClick={()=>{setFailure('');setRequest(x=>x+1)}}>重试</button>}</div>}
+  return <LocaleContext.Provider value={locale}><section lang={locale} className="chasey" aria-label={t('Chasey conversation map')}>
+    <header><div><MapIcon/><strong>{t('Chasey')}</strong><span className="ch-sub">{t('Conversation map')}</span></div><span className="ch-count">{t(turns.length === 1 ? '{n} turn' : '{n} turns', {n: turns.length})}</span></header>
+    {(hasMore || historyError || openError || failure) && <div className="ch-status" role="status">{failure || (openError ? t('This conversation is temporarily unavailable.') : historyError ? t('Earlier turns could not load. Showing a partial map.') : t('Loading earlier turns…'))} {(historyError || failure) && <button disabled={loading} onClick={()=>{setFailure('');setRequest(x=>x+1)}}>{t('Retry')}</button>}</div>}
     <Canvas sessionKey={sessionKey} graph={graph} byId={byId} selected={selected} expanded={expanded} returns={returnEdges} onPick={pick} onError={setFailure}
-      empty={opened && !loading ? '这段会话还没有可展示的问答。' : '正在读取会话…'}
-      linkBanner={linkStart !== null && <div className="ch-status">选择第 {linkStart} 轮要连回的卡片 <button onClick={()=>setLinkStart(null)}>取消</button></div>}/>
+      empty={opened && !loading ? t('This conversation has no turns to display yet.') : t('Loading conversation…')}
+      linkBanner={linkStart !== null && <div className="ch-status">{t('Choose a card to link back to from turn {n}.', {n: linkStart})} <button onClick={()=>setLinkStart(null)}>{t('Cancel')}</button></div>}/>
     {selectedNode && linkStart === null && <Reader key={selectedNode.id} node={selectedNode} send={sendFollowUp} maySend={maySend} drafts={drafts.current}
       expanded={expanded} toggleExpanded={()=>setExpanded(v=>!v)} close={()=>{pendingFollowUp.current=null;setExpanded(false);select(null)}}
       previous={selectedIndex>0 ? ()=>pick(graph.nodes[selectedIndex-1]) : null}
@@ -98,7 +103,12 @@ function Panel({ sessionKey, useTurns, useSession, useAccess, loadAll, send }) {
       visitSource={id=>{if(byId.has(id))pick(byId.get(id))}}
       connect={()=>{pendingFollowUp.current=null;setExpanded(false);setLinkStart(selectedNode.id)}}
       outgoing={returnEdges.filter(p=>p[0]===selectedNode.id)} unlink={b=>saveLinks(returns.filter(p=>p[0]!==selectedNode.id || p[1]!==b))}/>}
-  </section>
+  </section></LocaleContext.Provider>
+}
+
+function OpenButton({ onOpen }) {
+  const locale = useDeviceLocale()
+  return <button lang={locale} type="button" className="ch-open" title={t('Open the map for this conversation')} onClick={onOpen}><MapIcon/>{t('Chasey')}</button>
 }
 
 export const inject = ['slots','sessions','sidebarRightTabs','sidebarRight']
@@ -109,11 +119,11 @@ export function apply(ctx) {
     sheet.textContent=styles; document.head.append(sheet)
     return ()=>sheet.remove()
   }, 'chasey: panel styles')
-  ctx.effect(()=>ctx.sidebarRightTabs.register({ id, kind:tabKind, title:()=>'追追', guide:[{id:'open',order:40,title:()=>'追追 · 会话图谱',description:()=>'沿原文分叉追问，连回主线。'}] }), 'chasey: session map')
+  ctx.effect(()=>ctx.sidebarRightTabs.register({ id, kind:tabKind, title:()=>t('Chasey'), guide:[{id:'open',order:40,title:()=>t('Chasey · Conversation map'),description:()=>t('Ask about a passage and link back to the main thread.')}] }), 'chasey: session map')
   const slot='sidebar.right.pane.tab'
   ctx.slots.inject(slot,()=>ctx.slots.register({name:slot,key:id,inject(sessionId){
     const binding=ctx.sessions.binding(sessionId)
-    if (!binding) throw new Error('追追无法绑定此会话。')
+    if (!binding) throw new Error(t('Chasey could not open this conversation.'))
     if (!histories.has(binding)) histories.set(binding,history(binding.eventSource))
     return { hooks:{turns:histories.get(binding)}, sessionKey:sessionId,
       loadAll:()=>binding.session.loadThrough(0),
@@ -123,5 +133,5 @@ export function apply(ctx) {
       } }
   }},props=><Panel key={props.sessionKey} {...props}/>))
   const header='conversation.session.header.actions'
-  ctx.slots.inject(header,()=>ctx.slots.register({name:header,id,order:15},()=><button type="button" className="ch-open" title="打开当前会话的追追图谱" onClick={()=>ctx.sidebarRight.openTab(tabKind)}><MapIcon/>追追</button>))
+  ctx.slots.inject(header,()=>ctx.slots.register({name:header,id,order:15},()=><OpenButton onOpen={()=>ctx.sidebarRight.openTab(tabKind)}/>))
 }

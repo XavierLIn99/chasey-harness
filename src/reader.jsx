@@ -1,3 +1,4 @@
+import { t } from './i18n.js'
 import React, { useEffect, useRef, useState } from 'react'
 import {AnswerText,Typeset} from './typeset.jsx'
 import { SelectionAction } from './selection.jsx'
@@ -43,36 +44,36 @@ export function Reader({ node, send, maySend, drafts, close, connect, outgoing, 
     try {
       await send(node, quote || excerpt(node), question)
       drafts.delete(node.id)
-      setStatus('已提交到本会话。回答完成后会显示在图谱上。'); setQuestion(''); setQuote(''); clearMark()
-    } catch (e) { setStatus('提交失败：'+(e.message || String(e))) }
+      setStatus(t('Sent. The answer will appear on the map when complete.')); setQuestion(''); setQuote(''); clearMark()
+    } catch (e) { setStatus(t('Could not send: {error}', {error: e.message || String(e)})) }
     finally { pending.current=false; setBusy(false) }
   }
   const heading='ch-round-'+node.id
   return <section className={'ch-reader'+(expanded?' ch-expanded':'')} aria-labelledby={heading}>
     <div className="ch-readbar">
-      <div className="ch-round-nav"><IconButton icon="previous" label="上一轮" onClick={previous} disabled={!previous}/><strong id={heading}>第 {node.id} 轮</strong><IconButton icon="next" label="下一轮" onClick={next} disabled={!next}/></div>
-      <div className="ch-read-actions"><button type="button" className="ch-connect" onClick={connect}><Icon name="connect"/>连回卡片</button><IconButton icon={expanded?'collapse':'expand'} label={expanded?'返回画布':'展开阅读'} onClick={toggleExpanded} pressed={expanded}/><IconButton icon="close" label="关闭原文" onClick={close}/></div>
+      <div className="ch-round-nav"><IconButton icon="previous" label={t('Previous turn')} onClick={previous} disabled={!previous}/><strong id={heading}>{t('Turn {n}', {n: node.id})}</strong><IconButton icon="next" label={t('Next turn')} onClick={next} disabled={!next}/></div>
+      <div className="ch-read-actions"><button type="button" className="ch-connect" onClick={connect}><Icon name="connect"/>{t('Link to card')}</button><IconButton icon={expanded?'collapse':'expand'} label={expanded?t('Back to map'):t('Expand reader')} onClick={toggleExpanded} pressed={expanded}/><IconButton icon="close" label={t('Close reader')} onClick={close}/></div>
     </div>
-    <div className="ch-scroll" ref={reader} tabIndex={0} aria-label="本轮原文">
+    <div className="ch-scroll" ref={reader} tabIndex={0} aria-label={t('Original messages')}>
       <article className="ch-article">
-        {node.questions.length>0 && <header className="ch-question"><span className="ch-byline">我的提问</span>{node.questions.map((text,i)=><div role="heading" aria-level={3} className="ch-question-text" key={i}><Typeset text={text}/></div>)}</header>}
+        {node.questions.length>0 && <header className="ch-question"><span className="ch-byline">{t('My question')}</span>{node.questions.map((text,i)=><div role="heading" aria-level={3} className="ch-question-text" key={i}><Typeset text={text}/></div>)}</header>}
         {node.references.map((ref,i)=><blockquote key={i}>{ref.parent!=null && ref.parent!==node.id
-          ? <button className="ch-ref-source" onClick={()=>visitSource(ref.parent)}>引用第 {ref.parent} 轮原文 ↗</button>
-          : <small>{ref.parent===node.id?'引用本轮原文':'引用 · 来源未确认'}</small>}<Typeset text={ref.text}/></blockquote>)}
-        <div className="ch-response"><span className="ch-byline">回答原文</span>
+          ? <button className="ch-ref-source" onClick={()=>visitSource(ref.parent)}>{t('Quoted from turn {n} ↗', {n: ref.parent})}</button>
+          : <small>{ref.parent===node.id?t('Quoted from this turn'):t('Quote · source unconfirmed')}</small>}<Typeset text={ref.text}/></blockquote>)}
+        <div className="ch-response"><span className="ch-byline">{t('Original answer')}</span>
           {node.answers.map((text,i)=><div className="ch-prose" key={i}><AnswerText text={text}/></div>)}
-          {!node.answers.length && <p role="status" className="ch-pending">等待本轮回答…</p>}
+          {!node.answers.length && <p role="status" className="ch-pending">{t('Waiting for this answer…')}</p>}
         </div>
       </article>
     </div>
     <style>{'::highlight('+highlightName+'){background-color:#e9d7fa;color:#30223c}'}</style>
     <SelectionAction reader={reader} active={maySend && !busy} onPreview={setQuote} onPick={startFollowUp}/>
-    {!maySend && <div className="ch-status">此会话当前为只读，无法提交追问。</div>}
-    {outgoing.length>0 && <div className="ch-status">{outgoing.map(([,b])=><button key={b} aria-label={'移除回到第 '+b+' 轮的连线'} onClick={()=>unlink(b)}>回到第 {b} 轮 ×</button>)}</div>}
+    {!maySend && <div className="ch-status">{t('This conversation is read-only.')}</div>}
+    {outgoing.length>0 && <div className="ch-status">{outgoing.map(([,b])=><button key={b} aria-label={t('Remove link to turn {n}', {n: b})} onClick={()=>unlink(b)}>{t('Back to turn {n} ×', {n: b})}</button>)}</div>}
     {maySend && <form onSubmit={submit}><div className="ch-composer">
-      {quote && <div className="ch-quote"><strong>引用</strong><div className="ch-quote-preview"><Typeset text={quote} limit={240}/></div><button type="button" aria-label="清除选段" onClick={()=>{setQuote('');clearMark()}}>×</button></div>}
-      <div className="ch-entry"><textarea rows={1} ref={input} aria-label={quote?'沿选段追问':'沿本轮追问'} value={question} disabled={busy} onChange={e=>setQuestion(e.target.value)} placeholder={quote?'针对这段原文提问…':'沿着这一轮继续追问…'}/>
-      <button className="ch-send" aria-label="发送到本会话" title="发送到本会话" disabled={busy || !question.trim()}><Icon name="send"/></button></div>
+      {quote && <div className="ch-quote"><strong>{t('Quote')}</strong><div className="ch-quote-preview"><Typeset text={quote} limit={240}/></div><button type="button" aria-label={t('Clear selection')} onClick={()=>{setQuote('');clearMark()}}>×</button></div>}
+      <div className="ch-entry"><textarea rows={1} ref={input} aria-label={quote?t('Ask about the selection'):t('Ask about this turn')} value={question} disabled={busy} onChange={e=>setQuestion(e.target.value)} placeholder={quote?t('Ask about this passage…'):t('Ask a follow-up…')}/>
+      <button className="ch-send" aria-label={t('Send to this conversation')} title={t('Send to this conversation')} disabled={busy || !question.trim()}><Icon name="send"/></button></div>
     </div></form>}
     {status && <div className="ch-status" role="status">{status}</div>}
   </section>

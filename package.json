@@ -1,12 +1,12 @@
 {
   "name": "chasey-harness",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "private": true,
   "description": "Explore a DeepSeek Harness conversation as a branching map.",
   "type": "module",
   "main": "index.js",
   "exports": { ".": "./index.js", "./client": "./client.js", "./icon": "./icon.svg", "./locale/*.json": "./locale/*.json" },
-  "files": ["index.js", "client.js", "icon.svg", "cordis.patch.yml", "locale", "README.md"],
+  "files": ["index.js", "client.js", "icon.svg", "cordis.patch.yml", "locale", "README.md", "README.zh-CN.md"],
   "engines": { "dsh": "0.2.2-rc.5" },
   "dsh": {
     "bundle": { "patch": "./cordis.patch.yml" },
