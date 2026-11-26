@@ -2,8 +2,6 @@
 
 Turn a long chat into a map. Open an earlier answer, highlight a sentence or equation, and ask a follow-up. The answer appears in the same Harness chat and branches from the source turn on the map.
 
-[中文说明](README.zh-CN.md)
-
 ## Get started
 
 1. Download and unzip the plugin from the [latest release](https://github.com/XavierLIn99/chasey-harness/releases/latest).
